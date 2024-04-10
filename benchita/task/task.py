@@ -51,4 +51,9 @@ class Task(Sequence):
                     content=self[idx]["output"]
                 ))
             
-            yield messages
+            messages.append(dict(
+                role="user",
+                content=current["input"]
+            ))
+
+            yield dict(messages=messages, expected=current["output"])
