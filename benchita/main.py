@@ -68,11 +68,10 @@ def main():
                 temperature=args.temperature,
                 do_sample=True
             )
-            outputs = tokenizer.batch_decode(outputs, skip_special_tokens=True)
             
-            for i, o in zip(batch["prompt"], outputs):
-                print(i, o)
-                results.append(o[len(i):].strip())
+            outputs = tokenizer.batch_decode(outputs[:, input_ids.size(1):], skip_special_tokens=True)
+            results.extend(outputs)
+
         break
     
     print(expecteds)
