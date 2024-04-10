@@ -1,13 +1,13 @@
 import os
 import pandas as pd
 from enum import Enum
-from benchita.task import Task
+from benchita.task import ClassificationTask
 
 class IronItaLabel(Enum):
     NON_IRONICO = 0
     IRONICO = 1
 
-class IronIta(Task):
+class IronIta(ClassificationTask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ironita_file = os.path.join(self.base_folder, "ironita", "ironita.csv")
@@ -33,6 +33,10 @@ class IronIta(Task):
             "input": text,
             "output": label
         }
+
+    @property
+    def classes(self):
+        return [IronItaLabel.IRONICO.name, IronItaLabel.NON_IRONICO.name]
 
     @property
     def system(self):

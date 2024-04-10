@@ -72,8 +72,8 @@ def main():
             inference_outputs.extend(outputs)
 
         break
-    
-    print(inference_outputs)
+
+    print(task.evaluate(inference_inputs, inference_outputs))
 
 
 if __name__ == "__main__":

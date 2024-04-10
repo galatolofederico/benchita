@@ -5,6 +5,12 @@ class Task(Sequence):
     def __init__(self, base_folder="./assets"):
         self.base_folder = base_folder
 
+    def __len__(self):
+        raise NotImplementedError
+
+    def __getitem__(self, idx):
+        raise NotImplementedError
+
     @property
     def system(self):
         raise NotImplementedError
@@ -61,3 +67,6 @@ class Task(Sequence):
             ))
 
             yield dict(messages=messages, expected=current["output"])
+
+    def evaluate(self, inference_inputs, inference_outputs):
+        raise NotImplementedError
