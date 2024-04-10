@@ -16,6 +16,10 @@ class Task(Sequence):
     @property
     def inject_confirmation_reply(self):
         raise NotImplementedError
+    
+    @property
+    def max_new_tokens(self):
+        raise NotImplementedError
 
     def build(self, *, num_shots, system_style):
         assert system_style in ["system", "inject"]

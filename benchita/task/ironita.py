@@ -45,3 +45,7 @@ class IronIta(Task):
     @property
     def inject_confirmation_reply(self):
         return "Si, sono pronto a procedere con la classificazione. Classificherò ogni tweet come 'IRONICO' o 'NON_IRONICO' senza aggiungere commenti. Procediamo."
+
+    @property
+    def max_new_tokens(self):
+        return 10
