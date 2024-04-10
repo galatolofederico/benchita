@@ -40,22 +40,21 @@ def main():
     if not hasattr(tokenizer, "chat_template") or tokenizer.chat_template is None:
         raise ValueError("Only tokenizer chat templates are supported for now")
 
-    prompts = []
-    expecteds = []
+    inference_inputs = []
     for elem in tqdm(task.build(num_shots=args.num_shots, system_style=args.system_style), total=len(task)):
-        messages = elem["messages"]
-        expected = elem["expected"]
-        prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        elem["prompt"] = tokenizer.apply_chat_template(
+            elem["messages"],
+            tokenize=False,
+            add_generation_prompt=True
+        )
+        inference_inputs.append(elem)
 
-        prompts.append(prompt)
-        expecteds.append(expected)
+    inference_ds = Dataset.from_list(inference_inputs)
+    inference_ds = inference_ds.map(lambda x: tokenizer(x["prompt"], padding="max_length", truncation=False, max_length=args.max_length), batched=True)
 
-    ds = Dataset.from_dict({"prompt": prompts, "expected": expecteds})
-    ds = ds.map(lambda x: tokenizer(x["prompt"], padding="max_length", truncation=False, max_length=args.max_length), batched=True)
-
-    results = []
-    for i in tqdm(range(0, len(ds), args.batch_size), total=len(ds) // args.batch_size):
-        batch = ds[i:i+args.batch_size]
+    inference_outputs = []
+    for i in tqdm(range(0, len(inference_ds), args.batch_size), total=len(inference_ds) // args.batch_size):
+        batch = inference_ds[i:i+args.batch_size]
         input_ids = torch.tensor(batch["input_ids"], device=args.device)
         attention_mask = torch.tensor(batch["attention_mask"], device=args.device)
 
@@ -70,12 +69,12 @@ def main():
             )
             
             outputs = tokenizer.batch_decode(outputs[:, input_ids.size(1):], skip_special_tokens=True)
-            results.extend(outputs)
+            inference_outputs.extend(outputs)
 
         break
     
-    print(expecteds)
-    print(results)
+    print(inference_outputs)
+
 
 if __name__ == "__main__":
     main()

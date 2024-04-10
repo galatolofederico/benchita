@@ -48,4 +48,4 @@ class IronIta(Task):
 
     @property
     def max_new_tokens(self):
-        return 10
+        return len("NON_IRONICO")
