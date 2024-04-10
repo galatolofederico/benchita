@@ -9,3 +9,6 @@ def test_ironita():
     
     assert ds[0]["input"] == expected_ds0["input"]
     assert ds[0]["output"] == expected_ds0["output"]
+
+    elem = next(iter(ds.build(num_shots=3, system_style="inject")))
+    print(elem)

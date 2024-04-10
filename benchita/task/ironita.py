@@ -8,9 +8,8 @@ class IronItaLabel(Enum):
     IRONICO = 1
 
 class IronIta(Task):
-    def __init__(self, base_folder="./assets"):
-        super().__init__()
-        self.base_folder = base_folder
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.ironita_file = os.path.join(self.base_folder, "ironita", "ironita.csv")
         self.df = pd.read_csv(self.ironita_file, sep=";")
 
@@ -41,7 +40,7 @@ class IronIta(Task):
     
     @property
     def inject_confirmation(self):
-        return "È tutto chiaro?"
+        return " È tutto chiaro?"
     
     @property
     def inject_confirmation_reply(self):
