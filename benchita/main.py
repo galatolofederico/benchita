@@ -5,6 +5,7 @@ from tqdm import tqdm
 import torch
 
 from benchita.task import get_tasks, get_task
+from benchita.utils import parse_str_args
 
 def main():
     parser = argparse.ArgumentParser(description='Benchita')
@@ -14,6 +15,10 @@ def main():
 
     parser.add_argument('--model-class', type=str, default="AutoModel", help='The model class to use')
     parser.add_argument('--tokenizer-class', type=str, default="AutoTokenizer", help='The tokenizer class to use')
+
+    parser.add_argument("--model-args", type=str, default="")
+    parser.add_argument("--tokenizer-args", type=str, default="")
+    parser.add_argument("--apply_chat_template-args", type=str, default="tokenize=False,add_generation_prompt=True")
 
     parser.add_argument('--batch-size', type=int, default=16, help='The batch size')
     parser.add_argument('--num-shots', type=int, default=3, help='The number of shots')
@@ -32,10 +37,14 @@ def main():
     model_cls = getattr(transformers, args.model_class)
     tokenizer_cls = getattr(transformers, args.tokenizer_class)
     task_cls = get_task(args.task)
+
+    model_args = parse_str_args(args.model_args)
+    tokenizer_args = parse_str_args(args.tokenizer_args)
+    apply_chat_template_args = parse_str_args(args.apply_chat_template_args)
     
     task = task_cls()
-    model = model_cls.from_pretrained(args.model).to(args.device)
-    tokenizer = tokenizer_cls.from_pretrained(args.tokenizer)
+    model = model_cls.from_pretrained(args.model, **model_args).to(args.device)
+    tokenizer = tokenizer_cls.from_pretrained(args.tokenizer, **tokenizer_args)
 
     if not hasattr(tokenizer, "chat_template") or tokenizer.chat_template is None:
         raise ValueError("Only tokenizer chat templates are supported for now")
@@ -44,8 +53,7 @@ def main():
     for elem in tqdm(task.build(num_shots=args.num_shots, system_style=args.system_style), total=len(task)):
         elem["prompt"] = tokenizer.apply_chat_template(
             elem["messages"],
-            tokenize=False,
-            add_generation_prompt=True
+            **apply_chat_template_args
         )
         inference_inputs.append(elem)
 
