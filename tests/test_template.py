@@ -1,7 +1,7 @@
 from benchita.template import get_template
 
 def test_ironita():
-    template = get_template("default")
+    template = get_template("default")()
     messages = [
         {"role": "user", "content": "Hello"},
         {"role": "assistant", "content": "Hi there"}

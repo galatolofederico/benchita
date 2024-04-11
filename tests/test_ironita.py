@@ -1,7 +1,7 @@
 from benchita.task import get_task
 
 def test_ironita():
-    ds = get_task("ironita")
+    ds = get_task("ironita")()
     expected_ds0 = {
         "input" : "-Prendere i libri in copisteria-Fare la spesa-Spararmi in bocca-Farmi la doccia",
         "output" : "IRONICO"

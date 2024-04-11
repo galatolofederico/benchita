@@ -85,7 +85,7 @@ def register_task(name):
 def get_task(name):
     if name not in _task_registry:
         raise ValueError(f"Task {name} not found")
-    return _task_registry[name]()
+    return _task_registry[name]
 
-def get_tasks(name):
+def get_tasks():
     return list(_task_registry.keys())

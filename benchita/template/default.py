@@ -9,6 +9,8 @@ class DefaultTemplate(Template):
                 ret += f"USER: {message['content']}\n"
             elif message["role"] == "assistant":
                 ret += f"ASSISTANT: {message['content']}\n"
+            elif message["role"] == "system":
+                ret += f"{message['content']}\n\n"
             else:
                 raise ValueError(f"Unknown role {message['role']}")
         

@@ -5,7 +5,7 @@ class Template:
         pass
 
     @property
-    def apply_chat_template(self, messages, tokenize, add_generation_prompt):
+    def apply_chat_template(self, messages, **kwargs):
         raise NotImplementedError
 
 
@@ -20,7 +20,7 @@ def register_template(name):
 def get_template(name):
     if name not in _template_registry:
         raise ValueError(f"Template {name} not found")
-    return _template_registry[name]()
+    return _template_registry[name]
 
-def get_templates(name):
+def get_templates():
     return list(_template_registry.keys())

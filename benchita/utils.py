@@ -1,7 +1,9 @@
 
 
-def parse_srt_args(s):
+def parse_str_args(s):
     ret = dict()
-    for k, v in [arg.split("=") for arg in s.split(",")]:
-        ret[k] = v
+    for kv in [arg.split("=") for arg in s.split(",")]:
+        if len(kv) == 2:
+            k, v = kv
+            ret[k] = v
     return ret

@@ -5,11 +5,13 @@ from tqdm import tqdm
 import torch
 
 from benchita.task import get_tasks, get_task
+from benchita.template import get_template, get_templates
 from benchita.utils import parse_str_args
 
 def main():
     parser = argparse.ArgumentParser(description='Benchita')
     parser.add_argument('--task', type=str, required=True, help='The task to run', choices=get_tasks())
+    parser.add_argument('--template', type=str, default="", help='The template to use', choices=get_templates() + [""])
     parser.add_argument('--model', type=str, required=True, help='The model to use')
     parser.add_argument('--tokenizer', type=str, default="", help='The tokenizer to use')
 
@@ -46,12 +48,18 @@ def main():
     model = model_cls.from_pretrained(args.model, **model_args).to(args.device)
     tokenizer = tokenizer_cls.from_pretrained(args.tokenizer, **tokenizer_args)
 
-    if not hasattr(tokenizer, "chat_template") or tokenizer.chat_template is None:
-        raise ValueError("Only tokenizer chat templates are supported for now")
+    if (hasattr(tokenizer, "chat_template") and tokenizer.chat_template is not None) and args.template != "":
+        raise ValueError("Tokenizer has a chat template, but a template was provided")
+
+    if args.template != "":
+        template = get_template(args.template)()
+        chat_template = template.apply_chat_template
+    else:
+        chat_template = tokenizer.chat_template
 
     inference_inputs = []
     for elem in tqdm(task.build(num_shots=args.num_shots, system_style=args.system_style), total=len(task)):
-        elem["prompt"] = tokenizer.apply_chat_template(
+        elem["prompt"] = chat_template(
             elem["messages"],
             **apply_chat_template_args
         )
