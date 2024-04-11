@@ -1,5 +1,3 @@
-from benchita.task.task import Task
+from benchita.task.task import Task, register_task, get_task, get_tasks
 from benchita.task.classificationtask import ClassificationTask
 from benchita.task.ironita import IronIta
-
-from benchita.task.utils import get_tasks, get_task

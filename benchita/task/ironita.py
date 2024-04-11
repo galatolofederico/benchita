@@ -1,12 +1,13 @@
 import os
 import pandas as pd
 from enum import Enum
-from benchita.task import ClassificationTask
+from benchita.task import ClassificationTask, register_task
 
 class IronItaLabel(Enum):
     NON_IRONICO = 0
     IRONICO = 1
 
+@register_task("ironita")
 class IronIta(ClassificationTask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

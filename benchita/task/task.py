@@ -1,6 +1,8 @@
 import random
 from collections.abc import Sequence
 
+_task_registry = dict()
+
 class Task(Sequence):
     def __init__(self, base_folder="./assets"):
         self.base_folder = base_folder
@@ -70,3 +72,20 @@ class Task(Sequence):
 
     def evaluate(self, inference_inputs, inference_outputs):
         raise NotImplementedError
+    
+
+def register_task(name):
+    def decorator(cls):
+        if name in _task_registry:
+            raise ValueError(f"Task {name} already exists")
+        _task_registry[name] = cls
+        return cls
+    return decorator
+
+def get_task(name):
+    if name not in _task_registry:
+        raise ValueError(f"Task {name} not found")
+    return _task_registry[name]()
+
+def get_tasks(name):
+    return list(_task_registry.keys())
