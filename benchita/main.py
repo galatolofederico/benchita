@@ -1,9 +1,7 @@
 import argparse
 import transformers
-from datasets import Dataset
-from tqdm import tqdm
-import torch
-import json
+import os
+import datetime
 
 from benchita.task import get_tasks, get_task
 from benchita.template import get_template, get_templates
@@ -35,6 +33,7 @@ def main():
     parser.add_argument("--max-length", type=int, default=1024, help="The device to use")
 
     parser.add_argument("--dry-run", action="store_true", help="Dry run the task")
+    parser.add_argument("--save-dir", type=str, default="./results", help="The directory to save the results")
     
     args = parser.parse_args()
 
@@ -120,9 +119,20 @@ def main():
     log_info("Evaluating results...")
     results = task.evaluate(inference)
 
-    log_info("Task evaluation results:")
-    print(json.dumps(results, indent=4))
+    log_info("Task evaluation results summary:")
+    task.print_results_summary(results)
 
+    if not args.dry_run:
+        if not os.path.exists(args.save_dir): os.makedirs(args.save_dir)
+        fname = f"{args.model}_{args.task}_{datetime.datetime.now().isoformat()}.json"
+        fpath = os.path.join(args.save_dir, fname)
+        with open(fpath, "w") as f:
+            import json
+            json.dump(dict(
+                args=vars(args),
+                results=results,
+            ), f, indent=4)
+            log_info(f"Results saved to {fpath}")
 
 if __name__ == "__main__":
     main()
