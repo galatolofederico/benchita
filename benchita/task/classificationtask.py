@@ -31,7 +31,6 @@ class ClassificationTask(Task):
         y_pred = []
 
         for elem in inference:
-            print(elem)
             y_true.append(self._get_class(elem["expected"]))
             y_pred.append(self._get_class(elem["output"]))
 
