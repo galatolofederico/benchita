@@ -23,16 +23,16 @@ class ClassificationTask(Task):
             
         return self.unknown_class
 
-    def evaluate(self, inference_inputs, inference_outputs):
+    def evaluate(self, inference):
         available_classes = self.classes[:]
         available_classes.append(self.unknown_class)
 
         y_true = []
         y_pred = []
 
-        for input, output in zip(inference_inputs, inference_outputs):
-            true_class = input["expected"]
-            y_true.append(self._get_class(true_class))
-            y_pred.append(self._get_class(output))
+        for elem in inference:
+            print(elem)
+            y_true.append(self._get_class(elem["expected"]))
+            y_pred.append(self._get_class(elem["output"]))
 
         return classification_report(y_true, y_pred)
