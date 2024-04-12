@@ -3,6 +3,7 @@ import transformers
 from datasets import Dataset
 from tqdm import tqdm
 import torch
+import json
 
 from benchita.task import get_tasks, get_task
 from benchita.template import get_template, get_templates
@@ -44,11 +45,21 @@ def main():
     tokenizer_cls = getattr(transformers, args.tokenizer_class)
     task_cls = get_task(args.task)
 
+    log_info(f"Task: {args.task} (class: {task_cls.__name__})")
+    log_info(f"Model: {args.model} (class: {model_cls.__name__})")
+    log_info(f"Tokenizer: {args.tokenizer} (class: {tokenizer_cls.__name__})")
+
     model_args = parse_str_args(args.model_args)
     tokenizer_args = parse_str_args(args.tokenizer_args)
     apply_chat_template_args = parse_str_args(args.apply_chat_template_args)
     generate_args = parse_str_args(args.generate_args)
 
+    log_info(f"Model args: {model_args}")
+    log_info(f"Tokenizer args: {tokenizer_args}")
+    log_info(f"Apply chat template args: {apply_chat_template_args}")
+    log_info(f"Generate args: {generate_args}")
+
+    log_info("Loading tokenizer...")
     tokenizer = tokenizer_cls.from_pretrained(args.tokenizer, padding_side="left", **tokenizer_args)
 
     if ((hasattr(tokenizer, "chat_template") and tokenizer.chat_template is not None) and args.template != "") and not args.force_template:
@@ -71,13 +82,16 @@ def main():
     if tokenizer.pad_token is None:
         log_error("Tokenizer does not have a pad token, please use a tokenizer with a pad token or use --patch-tokenizer-pad to patch it")
 
+    log_info("Loading task...")
     task = task_cls()
 
     if hasattr(tokenizer, "model_max_length") and tokenizer.model_max_length < args.max_length + task.max_new_tokens:
         log_error(f"The model max_length ({tokenizer.model_max_length}) is smaller than the sum of the tokenized max_length ({args.max_length}) and the generated max_new_tokens ({task.max_new_tokens}). Consider decreasing the tokenized max_length with --max-length")
 
+    log_info("Loading model...")
     model = model_cls.from_pretrained(args.model, **model_args).to(args.device)
 
+    log_info("Building inference dataset...")
     inference_ds = build_inference_dataset(
         tokenizer=tokenizer,
         task=task,
@@ -91,18 +105,24 @@ def main():
     if args.dry_run:
         log_warn("Dry run enabled, running inference on just one batch")
 
+    log_info("Running inference...")
     inference = run_inference(
         dataset=inference_ds,
         model=model,
         tokenizer=tokenizer,
         task=task,
         batch_size=args.batch_size,
-        generate_args=parse_str_args(args.generate_args),
+        generate_args=generate_args,
         device=args.device,
         dry_run=args.dry_run
     )
 
-    print(task.evaluate(inference))
+    log_info("Evaluating results...")
+    results = task.evaluate(inference)
+
+    log_info("Task evaluation results:")
+    print(json.dumps(results, indent=4))
+
 
 if __name__ == "__main__":
     main()

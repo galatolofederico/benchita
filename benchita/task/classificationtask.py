@@ -35,4 +35,4 @@ class ClassificationTask(Task):
             y_true.append(self._get_class(elem["expected"]))
             y_pred.append(self._get_class(elem["output"]))
 
-        return classification_report(y_true, y_pred)
+        return classification_report(y_true, y_pred, output_dict=True)
