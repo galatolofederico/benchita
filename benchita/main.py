@@ -2,6 +2,7 @@ import argparse
 import transformers
 import os
 import datetime
+import torch
 
 from benchita.task import get_tasks, get_task
 from benchita.template import get_template, get_templates
@@ -31,6 +32,7 @@ def main():
     parser.add_argument("--system-style", type=str, default="system", help="The style of the system prompt", choices=["system", "inject"])
     parser.add_argument("--device", type=str, default="cpu", help="The device to use")
     parser.add_argument("--max-length", type=int, default=1024, help="The device to use")
+    parser.add_argument("--dtype", type=str, default="float32", help="The dtype to use")
 
     parser.add_argument("--dry-run", action="store_true", help="Dry run the task")
     parser.add_argument("--save-dir", type=str, default="./results", help="The directory to save the results")
@@ -43,6 +45,7 @@ def main():
     model_cls = getattr(transformers, args.model_class)
     tokenizer_cls = getattr(transformers, args.tokenizer_class)
     task_cls = get_task(args.task)
+    dtype = getattr(torch, args.dtype)
 
     log_info(f"Task: {args.task} (class: {task_cls.__name__})")
     log_info(f"Model: {args.model} (class: {model_cls.__name__})")
@@ -88,7 +91,7 @@ def main():
         log_error(f"The model max_length ({tokenizer.model_max_length}) is smaller than the sum of the tokenized max_length ({args.max_length}) and the generated max_new_tokens ({task.max_new_tokens}). Consider decreasing the tokenized max_length with --max-length")
 
     log_info("Loading model...")
-    model = model_cls.from_pretrained(args.model, **model_args).to(args.device)
+    model = model_cls.from_pretrained(args.model, torch_dtype=dtype, **model_args).to(args.device)
 
     log_info("Building inference dataset...")
     inference_ds = build_inference_dataset(
