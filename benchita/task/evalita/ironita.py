@@ -11,7 +11,7 @@ class IronItaLabel(Enum):
 class IronIta(ClassificationTask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.ironita_file = os.path.join(self.base_folder, "ironita", "ironita.csv")
+        self.ironita_file = os.path.join(self.base_folder, "evalita/ironita", "ironita.csv")
         self.df = pd.read_csv(self.ironita_file, sep=";")
 
     def _label_to_class(self, label):
