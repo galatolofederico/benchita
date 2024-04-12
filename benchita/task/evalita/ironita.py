@@ -1,43 +1,22 @@
 import os
 import pandas as pd
 from enum import Enum
-from benchita.task import ClassificationTask, register_task
+from benchita.task import ClassficationTaskFromCSV, register_task
 
 class IronItaLabel(Enum):
     NON_IRONICO = 0
     IRONICO = 1
 
 @register_task("ironita")
-class IronIta(ClassificationTask):
+class IronIta(ClassficationTaskFromCSV):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.ironita_file = os.path.join(self.base_folder, "evalita/ironita", "ironita.csv")
-        self.df = pd.read_csv(self.ironita_file, sep=";")
-
-    def _label_to_class(self, label):
-        if label == IronItaLabel.IRONICO.value:
-            return IronItaLabel.IRONICO.name
-        elif label == IronItaLabel.NON_IRONICO.value:
-            return IronItaLabel.NON_IRONICO.name
-        else:
-            raise ValueError("Invalid label")
-
-    def __len__(self):
-        return len(self.df)
-    
-    def __getitem__(self, idx):
-        elem = self.df.iloc[idx]
-        text = elem["text"]
-        label = self._label_to_class(elem["irony"])
-
-        return {
-            "input": text,
-            "output": label
-        }
-
-    @property
-    def classes(self):
-        return [IronItaLabel.IRONICO.name, IronItaLabel.NON_IRONICO.name]
+        super().__init__(
+            csv_file="evalita/ironita/ironita.csv",
+            text_column="text",
+            label_column="irony",
+            read_csv_kwargs={"sep": ";"},
+            labels=IronItaLabel,
+        )
 
     @property
     def system(self):
@@ -49,8 +28,4 @@ class IronIta(ClassificationTask):
     
     @property
     def inject_confirmation_reply(self):
-        return "Si, sono pronto a procedere con la classificazione. Classificherò ogni tweet come 'IRONICO' o 'NON_IRONICO' senza aggiungere commenti. Procediamo."
-
-    @property
-    def max_new_tokens(self):
-        return len("NON_IRONICO")
+        return f"Si, sono pronto a procedere con la classificazione. Classificherò ogni tweet come '{IronItaLabel.IRONICO.name}' o '{IronItaLabel.NON_IRONICO.name}' senza aggiungere commenti. Procediamo."

@@ -1,4 +1,7 @@
 from sklearn.metrics import classification_report
+import pandas as pd
+import os
+import enum
 
 from benchita.task import Task
 
@@ -44,3 +47,56 @@ class ClassificationTask(Task):
         print(f"Accuracy: {accuracy}")
         print(f"F1 (macro avg): {f1_macro}")
         print(f"F1 (weighted avg): {f1_weighted}")
+
+
+
+class ClassficationTaskFromCSV(ClassificationTask):
+    def __init__(self, *, csv_file, text_column, label_column, labels, read_csv_kwargs={}, join_base_folder=True):
+        super().__init__()
+        if join_base_folder: csv_file = os.path.join(self.base_folder, csv_file)
+        self.df = pd.read_csv(csv_file, **read_csv_kwargs)
+                
+        assert isinstance(labels, enum.EnumMeta)
+
+        self.text_column = text_column
+        self.label_column = label_column
+        self.labels = labels
+
+    def _label_to_class(self, label):
+        for l in self.labels:
+            if label == l.value:
+                return l.name
+        raise ValueError(f"Invalid label {label}")
+
+    def __len__(self):
+        return len(self.df)
+    
+    def __getitem__(self, idx):
+        elem = self.df.iloc[idx]
+        text = elem[self.text_column]
+        label = self._label_to_class(elem[self.label_column])
+
+        return {
+            "input": text,
+            "output": label
+        }
+    
+    @property
+    def classes(self):
+        return [l.name for l in self.labels]
+    
+    @property
+    def max_new_tokens(self):
+        return max([len(l.name) for l in self.labels])
+    
+    @property
+    def system(self):
+        raise NotImplementedError
+    
+    @property
+    def inject_confirmation(self):
+        raise NotImplementedError
+    
+    @property
+    def inject_confirmation_reply(self):
+        raise NotImplementedError
