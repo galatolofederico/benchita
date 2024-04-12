@@ -48,9 +48,7 @@ def main():
     tokenizer_args = parse_str_args(args.tokenizer_args)
     apply_chat_template_args = parse_str_args(args.apply_chat_template_args)
 
-    task = task_cls()
-    model = model_cls.from_pretrained(args.model, **model_args).to(args.device)
-    tokenizer = tokenizer_cls.from_pretrained(args.tokenizer, **tokenizer_args)
+    tokenizer = tokenizer_cls.from_pretrained(args.tokenizer, padding_side="left", **tokenizer_args)
 
     if ((hasattr(tokenizer, "chat_template") and tokenizer.chat_template is not None) and args.template != "") and not args.force_template:
         log_error("Tokenizer has a chat template, but a template was provided use --force-template to ignore this error")
@@ -66,7 +64,18 @@ def main():
         chat_template = tokenizer.chat_template
 
     if args.patch_tokenizer_pad:
+        log_warn("Patching tokenizer to use eos_token as padding token")
         tokenizer.pad_token = tokenizer.eos_token
+
+    if tokenizer.pad_token is None:
+        log_error("Tokenizer does not have a pad token, please use a tokenizer with a pad token or use --patch-tokenizer-pad to patch it")
+
+    task = task_cls()
+    model = model_cls.from_pretrained(args.model, **model_args).to(args.device)
+
+    if hasattr(tokenizer, "model_max_length") and tokenizer.model_max_length < args.max_length + task.max_new_tokens:
+        log_error(f"The model max_length ({tokenizer.model_max_length}) is smaller than the sum of the tokenized max_length ({args.max_length}) and the generated max_new_tokens ({task.max_new_tokens}). Consider decreasing the tokenized max_length with --max-length")
+        
 
     inference_inputs = []
     for elem in tqdm(task.build(num_shots=args.num_shots, system_style=args.system_style), total=len(task)):
