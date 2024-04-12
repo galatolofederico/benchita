@@ -28,5 +28,6 @@ def test_ironita():
             "prompt": elem["prompt"],
             "output": output
         })
+    results = ds.evaluate(inference)
 
-    ds.evaluate(inference)
+    assert results["accuracy"] == 0.5
