@@ -7,6 +7,7 @@ import torch
 from benchita.task import get_tasks, get_task
 from benchita.template import get_template, get_templates
 from benchita.utils import parse_str_args
+from benchita.logging import log_info, log_warn, log_error
 
 def main():
     parser = argparse.ArgumentParser(description='Benchita')
@@ -15,12 +16,15 @@ def main():
     parser.add_argument('--model', type=str, required=True, help='The model to use')
     parser.add_argument('--tokenizer', type=str, default="", help='The tokenizer to use')
 
-    parser.add_argument('--model-class', type=str, default="AutoModel", help='The model class to use')
+    parser.add_argument('--model-class', type=str, default="AutoModelForCausalLM", help='The model class to use')
     parser.add_argument('--tokenizer-class', type=str, default="AutoTokenizer", help='The tokenizer class to use')
 
     parser.add_argument("--model-args", type=str, default="")
     parser.add_argument("--tokenizer-args", type=str, default="")
     parser.add_argument("--apply_chat_template-args", type=str, default="tokenize=False,add_generation_prompt=True")
+
+    parser.add_argument('--patch-tokenizer-pad', action="store_true", help='Patch the tokenizer to use eos_token as padding token')
+    parser.add_argument('--force-template', action="store_true", help='Force the use of a template even if the tokenizer has a chat template')
 
     parser.add_argument('--batch-size', type=int, default=16, help='The batch size')
     parser.add_argument('--num-shots', type=int, default=3, help='The number of shots')
@@ -43,19 +47,26 @@ def main():
     model_args = parse_str_args(args.model_args)
     tokenizer_args = parse_str_args(args.tokenizer_args)
     apply_chat_template_args = parse_str_args(args.apply_chat_template_args)
-    
+
     task = task_cls()
     model = model_cls.from_pretrained(args.model, **model_args).to(args.device)
     tokenizer = tokenizer_cls.from_pretrained(args.tokenizer, **tokenizer_args)
 
-    if (hasattr(tokenizer, "chat_template") and tokenizer.chat_template is not None) and args.template != "":
-        raise ValueError("Tokenizer has a chat template, but a template was provided")
+    if ((hasattr(tokenizer, "chat_template") and tokenizer.chat_template is not None) and args.template != "") and not args.force_template:
+        log_error("Tokenizer has a chat template, but a template was provided use --force-template to ignore this error")
+
+    if (not hasattr(tokenizer, "chat_template") or tokenizer.chat_template is None) and args.template == "":
+        log_warn("Tokenizer does not have a chat template and no template was provided, using 'default' template")
+        args.template = "default"
 
     if args.template != "":
         template = get_template(args.template)()
         chat_template = template.apply_chat_template
     else:
         chat_template = tokenizer.chat_template
+
+    if args.patch_tokenizer_pad:
+        tokenizer.pad_token = tokenizer.eos_token
 
     inference_inputs = []
     for elem in tqdm(task.build(num_shots=args.num_shots, system_style=args.system_style), total=len(task)):

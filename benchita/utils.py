@@ -5,5 +5,5 @@ def parse_str_args(s):
     for kv in [arg.split("=") for arg in s.split(",")]:
         if len(kv) == 2:
             k, v = kv
-            ret[k] = v
+            ret[k] = eval(v)
     return ret
