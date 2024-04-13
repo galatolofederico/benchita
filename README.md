@@ -16,7 +16,7 @@ High quality few-shots benchmarks for Italian LLMs.
 | sentipolc | classification | Evalita 2014    | Binary classification task of tweets extracted from the sentipolc@Evalita 2014 gold test set | http://www.di.unito.it/~tutreeb/sentipolc-evalita14/ | gold    |
 | ironita   | classification | Evalita 2018    | Binary classification task of tweets with or without irony                             | http://twita.di.unito.it/dataset/ironita             | gold    |
 
-## installation
+## Installation
 
 To install Benchita, use the following command:
 
