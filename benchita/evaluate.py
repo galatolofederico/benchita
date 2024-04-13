@@ -46,7 +46,7 @@ def evaluate(args):
         template = get_template(args.template)()
         chat_template = template.apply_chat_template
     else:
-        chat_template = tokenizer.chat_template
+        chat_template = tokenizer.apply_chat_template
 
     if args.patch_tokenizer_pad:
         log_warn("Patching tokenizer to use eos_token as padding token")
