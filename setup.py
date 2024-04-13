@@ -20,6 +20,11 @@ setuptools.setup(
         ],
     },
     install_requires=[
+        "transformers>=4.39.3",
+        "jinja2>=3.0.2",
+        "pandas>=2.2.1",
+        "scikit-learn>=1.4.2",
+        "termcolor>=2.4.0",
     ],
     classifiers=[
         "Programming Language :: Python :: 3.11",
