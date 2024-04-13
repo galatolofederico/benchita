@@ -17,4 +17,4 @@ pip install -e git+https://github.com/galatolofederico/benchita.git
 
 ## Usage
 
-`benchita evaluate --model <huggingface-model-name> --task <task-name>`
+`benchita --model <huggingface-model-name> --task <task-name>`

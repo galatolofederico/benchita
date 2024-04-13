@@ -14,6 +14,11 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=["benchita"],
+    entry_points = {
+        "console_scripts": [
+            "easyopt=benchita.main:main",
+        ],
+    },
     install_requires=[
     ],
     classifiers=[
