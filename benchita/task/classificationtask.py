@@ -39,14 +39,16 @@ class ClassificationTask(Task):
 
         return classification_report(y_true, y_pred, output_dict=True, zero_division=0)
     
-    def print_results_summary(self, results):
+    def results_summary(self, results):
         accuracy = results["accuracy"]
         f1_macro = results["macro avg"]["f1-score"]
         f1_weighted = results["weighted avg"]["f1-score"]
 
-        print(f"Accuracy: {accuracy}")
-        print(f"F1 (macro avg): {f1_macro}")
-        print(f"F1 (weighted avg): {f1_weighted}")
+        return pd.DataFrame({
+            "Accuracy": [accuracy],
+            "F1 (macro)": [f1_macro],
+            "F1 (weighted)": [f1_weighted]
+        })
 
 
 

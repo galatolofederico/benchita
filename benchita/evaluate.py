@@ -101,9 +101,6 @@ def evaluate(args):
     log_info("Evaluating results...")
     results = task.evaluate(inference)
 
-    log_info("Task evaluation results summary:")
-    task.print_results_summary(results)
-
     if not args.dry_run and not args.dummy_run:
         if not os.path.exists(args.save_dir): os.makedirs(args.save_dir)
         sanitezed_model = args.model.replace("/", "_")
@@ -116,3 +113,9 @@ def evaluate(args):
                 results=results,
             ), f, indent=4)
             log_info(f"Results saved to {fpath}")
+
+    summary = task.results_summary(results)
+    summary.index = [args.model]
+
+    log_info("Results summary:")
+    print(summary)

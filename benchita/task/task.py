@@ -13,6 +13,12 @@ class Task(Sequence):
     def __getitem__(self, idx):
         raise NotImplementedError
 
+    def evaluate(self, inference_inputs, inference_outputs):
+        raise NotImplementedError
+    
+    def results_summary(self, results):
+        raise NotImplementedError
+
     @property
     def system(self):
         raise NotImplementedError
@@ -70,8 +76,6 @@ class Task(Sequence):
 
             yield dict(messages=messages, expected=current["output"])
 
-    def evaluate(self, inference_inputs, inference_outputs):
-        raise NotImplementedError
     
 
 def register_task(name):
