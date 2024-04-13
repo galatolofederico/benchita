@@ -31,6 +31,7 @@ def main():
     parser.add_argument("--device", type=str, default="cpu", help="The device to use")
     parser.add_argument("--max-length", type=int, default=1024, help="The max length to use")
     parser.add_argument("--dtype", type=str, default="float32", help="The dtype to use")
+    parser.add_argument("--flash-attention", action="store_true", help="Use flash the attention2")
 
     parser.add_argument("--dry-run", action="store_true", help="Dry run the task")
     parser.add_argument("--dummy-run", action="store_true", help="Run the task using a dummy model")

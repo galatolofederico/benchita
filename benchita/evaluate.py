@@ -66,7 +66,12 @@ def evaluate(args):
         model = DummyModel(task)
     else:
         log_info("Loading model...")
-        model = model_cls.from_pretrained(args.model, torch_dtype=dtype, **model_args).to(args.device)
+        model = model_cls.from_pretrained(
+            args.model,
+            torch_dtype=dtype,
+            use_flash_attention_2=args.flash_attention,
+            **model_args
+        ).to(args.device)
 
     log_info("Building inference dataset...")
     inference_ds = build_inference_dataset(
