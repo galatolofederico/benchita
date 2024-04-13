@@ -21,7 +21,7 @@ High quality few-shots benchmarks for Italian LLMs.
 To install Benchita, use the following command:
 
 ```
-pip install -e git+https://github.com/galatolofederico/benchita.git
+pip install git+https://github.com/galatolofederico/benchita.git
 ```
 
 ## Usage
