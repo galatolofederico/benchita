@@ -6,7 +6,7 @@ from benchita.template import get_templates
 from benchita.evaluate import evaluate
 
 def main():
-    parser = argparse.ArgumentParser(description="Benchita")
+    parser = argparse.ArgumentParser(description="benchita")
     parser.add_argument("cmd", type=str, nargs="?", help="Command to execute", choices=["evaluate", "collect"])
     
     parser.add_argument("--task", type=str, required=True, help="The task to run", choices=get_tasks())
@@ -29,7 +29,7 @@ def main():
     parser.add_argument("--num-shots", type=int, default=3, help="The number of shots")
     parser.add_argument("--system-style", type=str, default="system", help="The style of the system prompt", choices=["system", "inject"])
     parser.add_argument("--device", type=str, default="cpu", help="The device to use")
-    parser.add_argument("--max-length", type=int, default=1024, help="The device to use")
+    parser.add_argument("--max-length", type=int, default=1024, help="The max length to use")
     parser.add_argument("--dtype", type=str, default="float32", help="The dtype to use")
 
     parser.add_argument("--dry-run", action="store_true", help="Dry run the task")
