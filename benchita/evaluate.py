@@ -7,9 +7,12 @@ from benchita.task import get_task
 from benchita.template import get_template
 from benchita.utils import parse_str_args, build_inference_dataset, run_inference
 from benchita.logging import log_info, log_warn, log_error
-
+from benchita.dummy import DummyModel
 
 def evaluate(args):
+    if args.dummy_run:
+        log_warn("Dummy run enabled, the model will not be loaded, instead a dummy model will be used")
+
     model_cls = getattr(transformers, args.model_class)
     tokenizer_cls = getattr(transformers, args.tokenizer_class)
     task_cls = get_task(args.task)
@@ -58,8 +61,12 @@ def evaluate(args):
     if hasattr(tokenizer, "model_max_length") and tokenizer.model_max_length < args.max_length + task.max_new_tokens:
         log_error(f"The model max_length ({tokenizer.model_max_length}) is smaller than the sum of the tokenized max_length ({args.max_length}) and the generated max_new_tokens ({task.max_new_tokens}). Consider decreasing the tokenized max_length with --max-length")
 
-    log_info("Loading model...")
-    model = model_cls.from_pretrained(args.model, torch_dtype=dtype, **model_args).to(args.device)
+    if args.dummy_run:
+        log_warn("Loading dummy model...")
+        model = DummyModel(task)
+    else:
+        log_info("Loading model...")
+        model = model_cls.from_pretrained(args.model, torch_dtype=dtype, **model_args).to(args.device)
 
     log_info("Building inference dataset...")
     inference_ds = build_inference_dataset(
@@ -75,17 +82,21 @@ def evaluate(args):
     if args.dry_run:
         log_warn("Dry run enabled, running inference on just one batch")
 
-    log_info("Running inference...")
-    inference = run_inference(
-        dataset=inference_ds,
-        model=model,
-        tokenizer=tokenizer,
-        task=task,
-        batch_size=args.batch_size,
-        generate_args=generate_args,
-        device=args.device,
-        dry_run=args.dry_run
-    )
+
+    if args.dummy_run:
+        inference = model.simulate_inference(inference_ds)
+    else:
+        log_info("Running inference...")
+        inference = run_inference(
+            dataset=inference_ds,
+            model=model,
+            tokenizer=tokenizer,
+            task=task,
+            batch_size=args.batch_size,
+            generate_args=generate_args,
+            device=args.device,
+            dry_run=args.dry_run
+        )
 
     log_info("Evaluating results...")
     results = task.evaluate(inference)
@@ -93,9 +104,10 @@ def evaluate(args):
     log_info("Task evaluation results summary:")
     task.print_results_summary(results)
 
-    if not args.dry_run:
+    if not args.dry_run and not args.dummy_run:
         if not os.path.exists(args.save_dir): os.makedirs(args.save_dir)
-        fname = f"{args.model}_{args.task}_{datetime.datetime.now().isoformat()}.json"
+        sanitezed_model = args.model.replace("/", "_")
+        fname = f"{sanitezed_model}_{args.task}_{datetime.datetime.now().isoformat()}.json"
         fpath = os.path.join(args.save_dir, fname)
         with open(fpath, "w") as f:
             import json

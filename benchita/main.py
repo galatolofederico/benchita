@@ -33,6 +33,7 @@ def main():
     parser.add_argument("--dtype", type=str, default="float32", help="The dtype to use")
 
     parser.add_argument("--dry-run", action="store_true", help="Dry run the task")
+    parser.add_argument("--dummy-run", action="store_true", help="Run the task using a dummy model")
     parser.add_argument("--save-dir", type=str, default="./results", help="The directory to save the results")
     
     args = parser.parse_args()
