@@ -38,6 +38,7 @@ def run_inference(*, dataset, model, tokenizer, task, batch_size, generate_args,
                 input_ids=input_ids,
                 attention_mask=attention_mask,
                 max_new_tokens=task.max_new_tokens,
+                pad_token_id=tokenizer.eos_token_id,
                 **generate_args
             )
 
