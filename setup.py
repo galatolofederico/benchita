@@ -16,7 +16,7 @@ setuptools.setup(
     packages=["benchita"],
     entry_points = {
         "console_scripts": [
-            "easyopt=benchita.main:main",
+            "benchita=benchita.main:main",
         ],
     },
     install_requires=[
