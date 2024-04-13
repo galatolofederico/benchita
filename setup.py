@@ -13,7 +13,7 @@ setuptools.setup(
     url="",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=["benchita", "benchita.task", "benchita.template"],
+    packages=setuptools.find_packages(),
     entry_points = {
         "console_scripts": [
             "benchita=benchita.main:main",
