@@ -110,6 +110,18 @@ To start the evaluation simply run
 benchita
 ```
 
+The results will look something like:
+
+```
+                                   Task  Accuracy  F1 (macro)  F1 (weighted)
+galatolo/cerbero-7b             ironita  0.615826    0.597719       0.597523
+galatolo/cerbero-7b           sentipolc  0.701923    0.459721       0.696584
+galatolo/cerbero-7b             ami2020  0.605000    0.400814       0.601221
+galatolo/cerbero-7b-openchat    ironita  0.688073    0.684083       0.684002
+galatolo/cerbero-7b-openchat    ami2020  0.607000    0.591795       0.591795
+galatolo/cerbero-7b-openchat  sentipolc  0.711849    0.458749       0.697562
+```
+
 
 ## License
 
