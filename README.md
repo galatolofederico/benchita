@@ -4,7 +4,7 @@ High quality few-shots benchmarks for Italian LLMs.
 
 ## Features 
 
-- 🚀 **Parallel Execution**: Parallel distributes jobs (model+task) across all available GPUs.
+- 🚀 **Parallel Execution**: Distributes jobs (model+task) across all available GPUs in parallel.
 - ✅ **Easy to Use**: Straightforward setup and operation.
 - 🎨 **Chat Template Support**: Integrates smoothly with 🤗 chat templates.
 - 🛠️ **Custom Template Support**: Easily implement user-defined templates.
@@ -15,7 +15,7 @@ High quality few-shots benchmarks for Italian LLMs.
 | Task      | Type           | Source          | Description                                                                                  | Link                                                                     | Quality |
 |-----------|----------------|-----------------|----------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|---------|
 | sentipolc | classification | Evalita 2014    | Binary classification task of positive or negative tweets (gold test set)                    | http://www.di.unito.it/~tutreeb/sentipolc-evalita14/                     | gold    |
-| ironita   | classification | Evalita 2018    | Binary classification task of irnoic tweets (gold test set)                                  | http://twita.di.unito.it/dataset/ironita                                 | gold    |
+| ironita   | classification | Evalita 2018    | Binary classification task of ironic tweets (gold test set)                                  | http://twita.di.unito.it/dataset/ironita                                 | gold    |
 | ami2020   | classification | Evalita 2020    | Binary classification task of misogynous tweets (gold test set)                              | https://live.european-language-grid.eu/catalogue/corpus/7005             | gold    |
 
 ## Roadmap
