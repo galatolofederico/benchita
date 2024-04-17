@@ -1,7 +1,7 @@
 import argparse
 import torch
 import pandas as pd
-from multiprocessing import Queue, Process
+import torch.multiprocessing as mp
 import io
 
 from benchita.config import parse_config
@@ -30,8 +30,8 @@ def main():
     if args.devices is None:
         args.devices = list(range(torch.cuda.device_count()))
 
-    jobs_queue = Queue()
-    results_queue = Queue()
+    jobs_queue = mp.Queue()
+    results_queue = mp.Queue()
 
     for job in jobs: jobs_queue.put_nowait(job)
 
@@ -51,8 +51,8 @@ def main():
 
         workers = []
         for i, device in enumerate(args.devices):
-            device = torch.cuda.device(device)
-            workers.append(Process(
+            device = torch.device(f"cuda:{device}")
+            workers.append(mp.Process(
                 target=worker,
                 kwargs=dict(
                     jobs_queue=jobs_queue,
