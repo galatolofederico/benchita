@@ -9,7 +9,7 @@ from benchita.utils import build_inference_dataset, run_inference
 from benchita.logging import log_info, log_warn, log_error
 from benchita.dummy import DummyModel
 
-def evaluate(*, job, args, results_file, device="cpu"):
+def evaluate(*, job, args, results_file, device, worker_id=0):
     if args.dummy_run:
         log_warn("Dummy run enabled, the model will not be loaded, instead a dummy model will be used")
 
@@ -20,23 +20,23 @@ def evaluate(*, job, args, results_file, device="cpu"):
     tokenizer_cls = getattr(transformers, model_config.tokenizer.class_name)
     task_cls = get_task(task_config.name)
 
-    log_info(f"Task: {task_config.name} (class: {task_cls.__name__})")
-    log_info(f"Model: {model_config.model.class_name} (class: {model_cls.__name__})")
-    log_info(f"Tokenizer: {model_config.tokenizer.class_name} (class: {tokenizer_cls.__name__})")
+    log_info(f"Task: {task_config.name} (class: {task_cls.__name__})", worker_id=worker_id)
+    log_info(f"Model: {model_config.model.class_name} (class: {model_cls.__name__})", worker_id=worker_id)
+    log_info(f"Tokenizer: {model_config.tokenizer.class_name} (class: {tokenizer_cls.__name__})", worker_id=worker_id)
 
-    log_info(f"Model args: {model_config.model.args}")
-    log_info(f"Tokenizer args: {model_config.tokenizer.args}")
-    log_info(f"Template args: {model_config.template.args}")
-    log_info(f"Generate args: {model_config.generate.args}")
+    log_info(f"Model args: {model_config.model.args}", worker_id=worker_id)
+    log_info(f"Tokenizer args: {model_config.tokenizer.args}", worker_id=worker_id)
+    log_info(f"Template args: {model_config.template.args}", worker_id=worker_id)
+    log_info(f"Generate args: {model_config.generate.args}", worker_id=worker_id)
 
-    log_info("Loading tokenizer...")
+    log_info("Loading tokenizer...", worker_id=worker_id)
     tokenizer = tokenizer_cls.from_pretrained(model_config.tokenizer.name, padding_side="left", **model_config.tokenizer.args)
 
     if ((hasattr(tokenizer, "chat_template") and tokenizer.chat_template is not None) and model_config.template.name is not None) and not model_config.template.force:
-        log_error("Tokenizer has a chat template, but a template was provided, set force=True in the temaplte config to ignore this error")
+        log_error("Tokenizer has a chat template, but a template was provided, set force=True in the temaplte config to ignore this error", worker_id=worker_id)
 
     if (not hasattr(tokenizer, "chat_template") or tokenizer.chat_template is None) and model_config.template.name is None:
-        log_warn("Tokenizer does not have a chat template and no template was provided, using 'default' template")
+        log_warn("Tokenizer does not have a chat template and no template was provided, using 'default' template", worker_id=worker_id)
         model_config.template.name = "default"
 
     if model_config.template.name is not None:
@@ -46,30 +46,30 @@ def evaluate(*, job, args, results_file, device="cpu"):
         chat_template = tokenizer.apply_chat_template
     
     if model_config.tokenizer.patch_tokenizer_pad:
-        log_warn("Patching tokenizer to use eos_token as padding token")
+        log_warn("Patching tokenizer to use eos_token as padding token", worker_id=worker_id)
         tokenizer.pad_token = tokenizer.eos_token
 
     if tokenizer.pad_token is None:
-        log_error("Tokenizer does not have a pad token, please use a tokenizer with a pad token or specify patch_tokenizer_pad=True in the tokenizer config to patch it")
+        log_error("Tokenizer does not have a pad token, please use a tokenizer with a pad token or specify patch_tokenizer_pad=True in the tokenizer config to patch it", worker_id=worker_id)
 
-    log_info("Loading task...")
+    log_info("Loading task...", worker_id=worker_id)
     task = task_cls()
 
     if hasattr(tokenizer, "model_max_length") and tokenizer.model_max_length < model_config.tokenizer.max_length + task.max_new_tokens:
-        log_error(f"The model max_length ({tokenizer.model_max_length}) is smaller than the sum of the tokenized max_length ({model_config.tokenizer.max_length}) and the generated max_new_tokens ({task.max_new_tokens}). Consider decreasing the tokenized max_length setting max_length in the tokenizer config")
+        log_error(f"The model max_length ({tokenizer.model_max_length}) is smaller than the sum of the tokenized max_length ({model_config.tokenizer.max_length}) and the generated max_new_tokens ({task.max_new_tokens}). Consider decreasing the tokenized max_length setting max_length in the tokenizer config", worker_id=worker_id)
     
     if args.dummy_run:
-        log_warn("Loading dummy model...")
+        log_warn("Loading dummy model...", worker_id=worker_id)
         model = DummyModel(task)
     else:
-        log_info("Loading model...")
+        log_info("Loading model...", worker_id=worker_id)
         model = model_cls.from_pretrained(
             model_config.model.name,
             torch_dtype=getattr(torch, model_config.model.dtype),
             **model_config.model.args
         ).to(device)
 
-    log_info("Building inference dataset...")
+    log_info("Building inference dataset...", worker_id=worker_id)
     inference_ds = build_inference_dataset(
         tokenizer=tokenizer,
         task=task,
@@ -81,12 +81,12 @@ def evaluate(*, job, args, results_file, device="cpu"):
     )
 
     if args.dry_run:
-        log_warn("Dry run enabled, running inference on just one batch")
+        log_warn("Dry run enabled, running inference on just one batch", worker_id=worker_id)
 
     if args.dummy_run:
         inference = model.simulate_inference(inference_ds)
     else:
-        log_info("Running inference...")
+        log_info("Running inference...", worker_id=worker_id)
         inference = run_inference(
             dataset=inference_ds,
             model=model,
@@ -98,7 +98,7 @@ def evaluate(*, job, args, results_file, device="cpu"):
             dry_run=args.dry_run
         )
 
-    log_info("Evaluating results...")
+    log_info("Evaluating results...", worker_id=worker_id)
     results = task.evaluate(inference)
 
     if not args.dry_run and not args.dummy_run:
@@ -109,10 +109,12 @@ def evaluate(*, job, args, results_file, device="cpu"):
                 task=task_config.model_dump(),
                 results=results,
             ), f, indent=4)
-            log_info(f"Results saved to {results_file}")
+            log_info(f"Results saved to {results_file}", worker_id=worker_id)
 
     summary = task.results_summary(results)
     summary.index = [model_config.model.name]
 
-    log_info("Results summary:")
+    log_info("Results summary:", worker_id=worker_id)
     print(summary)
+
+    return results
