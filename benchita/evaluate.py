@@ -101,20 +101,23 @@ def evaluate(*, job, args, results_file, device, worker_id=0):
     log_info("Evaluating results...", worker_id=worker_id)
     results = task.evaluate(inference)
 
-    if not args.dry_run and not args.dummy_run:
-        with open(results_file, "w") as f:
-            import json
-            json.dump(dict(
-                model=model_config.model_dump(),
-                task=task_config.model_dump(),
-                results=results,
-            ), f, indent=4)
-            log_info(f"Results saved to {results_file}", worker_id=worker_id)
-
     summary = task.results_summary(results)
     summary.index = [model_config.model.name]
-
+    
     log_info("Results summary:", worker_id=worker_id)
     print(summary)
 
-    return results
+    final_results = dict(
+        model=model_config.model_dump(),
+        task=task_config.model_dump(),
+        results=results,
+        summary=summary.to_json()
+    )
+
+    if not args.dry_run and not args.dummy_run:
+        with open(results_file, "w") as f:
+            import json
+            json.dump(final_results, f, indent=4)
+            log_info(f"Results saved to {results_file}", worker_id=worker_id)
+
+    return final_results

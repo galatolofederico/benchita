@@ -1,6 +1,8 @@
 import argparse
 import torch
+import pandas as pd
 from multiprocessing import Queue, Process
+import io
 
 from benchita.config import parse_config
 from benchita.utils import build_jobs
@@ -68,8 +70,10 @@ def main():
     results = []
     while not results_queue.empty():
         results.append(results_queue.get())
-    
-    print(results)
+
+    summary = pd.concat([pd.read_json(io.StringIO(result["summary"])) for result in results])
+    log_info("Final results:")
+    print(summary)
 
 if __name__ == "__main__":
     main()

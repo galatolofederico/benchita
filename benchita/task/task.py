@@ -35,6 +35,13 @@ class Task(Sequence):
     def max_new_tokens(self):
         raise NotImplementedError
 
+    @property
+    def task_name(self):
+        for k, v in _task_registry.items():
+            if isinstance(self, v):
+                return k
+        return "UNKNOWN_TASK"
+
     def build(self, *, num_shots, system_style):
         assert system_style in ["system", "inject"]
         for i in range(0, len(self)):
@@ -83,6 +90,7 @@ def register_task(name):
         if name in _task_registry:
             raise ValueError(f"Task {name} already exists")
         _task_registry[name] = cls
+        cls.task_name = name
         return cls
     return decorator
 

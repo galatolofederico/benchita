@@ -45,6 +45,7 @@ class ClassificationTask(Task):
         f1_weighted = results["weighted avg"]["f1-score"]
 
         return pd.DataFrame({
+            "Task": [self.task_name],
             "Accuracy": [accuracy],
             "F1 (macro)": [f1_macro],
             "F1 (weighted)": [f1_weighted]
