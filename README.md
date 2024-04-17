@@ -46,7 +46,7 @@ python3 -m venv env
 source ./env/bin/activate
 ```
 
-Install Cenchita
+Install Benchita
 
 ```
 pip3 install -e .
