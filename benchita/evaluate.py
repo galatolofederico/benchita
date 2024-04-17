@@ -5,7 +5,7 @@ import torch
 
 from benchita.task import get_task
 from benchita.template import get_template
-from benchita.utils import parse_str_args, build_inference_dataset, run_inference
+from benchita.utils import build_inference_dataset, run_inference
 from benchita.logging import log_info, log_warn, log_error
 from benchita.dummy import DummyModel
 
@@ -39,7 +39,7 @@ def evaluate(*, job, args, results_file, device="cpu"):
         log_warn("Tokenizer does not have a chat template and no template was provided, using 'default' template")
         model_config.template.name = "default"
 
-    if model_config.template.name != "":
+    if model_config.template.name is not None:
         template = get_template(model_config.template.name)()
         chat_template = template.apply_chat_template
     else:

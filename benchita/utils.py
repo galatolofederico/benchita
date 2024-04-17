@@ -3,14 +3,6 @@ import torch
 from datasets import Dataset
 import itertools
 
-def parse_str_args(s):
-    ret = dict()
-    for kv in [arg.split("=") for arg in s.split(",")]:
-        if len(kv) == 2:
-            k, v = kv
-            ret[k] = eval(v)
-    return ret
-
 
 def build_inference_dataset(*, tokenizer, task, num_shots, system_style, chat_template, apply_chat_template_args, max_length):
     inference_inputs = []

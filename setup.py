@@ -21,6 +21,7 @@ setuptools.setup(
     },
     install_requires=[
         "transformers>=4.39.3",
+        "datasets>=2.18.0",
         "jinja2>=3.0.2",
         "pandas>=2.2.1",
         "scikit-learn>=1.4.2",

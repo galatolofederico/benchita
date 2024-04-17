@@ -27,7 +27,7 @@ class Template(BaseModel):
     system_style: str = "inject"
     name: str = None
     force: bool = False
-    args: dict = {"add_generation_prompt": True}
+    args: dict = {"add_generation_prompt": True, "tokenize": False}
 
 class Generate(BaseModel):
     batch_size: int = 16

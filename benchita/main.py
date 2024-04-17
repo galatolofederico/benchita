@@ -14,12 +14,18 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="Dry run the task")
     parser.add_argument("--dummy-run", action="store_true", help="Run the task using a dummy model")
     parser.add_argument("--results-dir", type=str, default="./results", help="The directory to save the results")
+    parser.add_argument("--devices", type=int, default=None, nargs="*", help="The devices to use")
     
     args = parser.parse_args()
 
     config = parse_config(args.config)
     jobs = build_jobs(config)
     log_info(f"{len(jobs)} jobs to run")
+
+    if args.devices is None:
+        args.devices = list(range(torch.cuda.device_count()))
+
+    log_info(f"Running jobs in parallel using {len(args.devices)} devices")
 
     run_job(job=jobs[0], args=args, experiment_name=config.experiment)
 
