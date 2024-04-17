@@ -112,7 +112,7 @@ def evaluate(*, job, args, results_file, device="cpu"):
             log_info(f"Results saved to {results_file}")
 
     summary = task.results_summary(results)
-    summary.index = [args.model]
+    summary.index = [model_config.model.name]
 
     log_info("Results summary:")
     print(summary)
