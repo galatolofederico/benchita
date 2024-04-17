@@ -9,7 +9,7 @@ from benchita.utils import parse_str_args, build_inference_dataset, run_inferenc
 from benchita.logging import log_info, log_warn, log_error
 from benchita.dummy import DummyModel
 
-def evaluate(args):
+def evaluate(*, job, args, results_file):
     if args.dummy_run:
         log_warn("Dummy run enabled, the model will not be loaded, instead a dummy model will be used")
 

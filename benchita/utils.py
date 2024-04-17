@@ -1,6 +1,7 @@
 from tqdm import tqdm
 import torch
 from datasets import Dataset
+import itertools
 
 def parse_str_args(s):
     ret = dict()
@@ -56,3 +57,13 @@ def run_inference(*, dataset, model, tokenizer, task, batch_size, generate_args,
             break
     
     return inference_outputs
+
+
+def build_jobs(config):
+    jobs = []
+    for task, model in itertools.product(config.tasks, config.models):
+        jobs.append({
+            "task": task,
+            "model": model
+        })
+    return jobs

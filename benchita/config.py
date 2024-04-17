@@ -18,6 +18,8 @@ class Model(BaseModel):
 class Tokenizer(BaseModel):
     name: str
     class_name: str = Field(..., alias='class')
+    patch_tokenizer_pad: bool = False
+    max_length: int = 1024
     args: dict = {}
 
 class Template(BaseModel):
