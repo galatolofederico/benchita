@@ -104,7 +104,7 @@ models:
         do_sample: False
 ```
 
-To start the evaluation simply run
+To start the evaluation simply run:
 
 ```
 benchita
