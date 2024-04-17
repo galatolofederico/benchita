@@ -109,11 +109,6 @@ To start the evaluation simply run
 benchita
 ```
 
-After a while the results will look like this:
-
-```
-
-```
 
 ## License
 
