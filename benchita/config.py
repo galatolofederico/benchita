@@ -12,30 +12,32 @@ class Task(BaseModel):
 
 class Model(BaseModel):
     name: str
-    class_name: str = Field(..., alias='class')
+    class_name: str = Field(alias="class", default="AutoModelForCausalLM")
+    dtype: str = "float32"
     args: dict = {}
 
 class Tokenizer(BaseModel):
-    name: str
-    class_name: str = Field(..., alias='class')
+    name: str = None
+    class_name: str = Field(alias="class", default="AutoTokenizer")
     patch_tokenizer_pad: bool = False
     max_length: int = 1024
     args: dict = {}
 
 class Template(BaseModel):
-    system_style: str
+    system_style: str = "inject"
     name: str = None
     force: bool = False
+    args: dict = {"add_generation_prompt": True}
 
 class Generate(BaseModel):
-    batch_size: int
+    batch_size: int = 16
     args: dict = {"do_sample": False}
 
 class ModelConfig(BaseModel):
     model: Model
-    tokenizer: Tokenizer = None
-    template: Template
-    generate: Generate
+    tokenizer: Tokenizer = Tokenizer()
+    template: Template = Template()
+    generate: Generate = Generate()
 
 class Config(BaseModel):
     experiment: str
@@ -56,5 +58,7 @@ def parse_config(config_file):
     for model in config.models:
         if model.template.name is not None and model.template.name not in get_templates():
             raise Exception(f"Template {model.template.name} not found")
-    
+        if model.tokenizer.name is None:
+            model.tokenizer.name = model.model.name
+
     return config
