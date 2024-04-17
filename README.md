@@ -11,10 +11,12 @@ High quality few-shots benchmarks for Italian LLMs.
 
 ## Implemented tasks
 
-| Task      | Type           | Source          | Description                                                                            | Link                                                 | Quality |
-|-----------|----------------|-----------------|----------------------------------------------------------------------------------------|------------------------------------------------------|---------|
-| sentipolc | classification | Evalita 2014    | Binary classification task of tweets extracted from the sentipolc@Evalita 2014 gold test set | http://www.di.unito.it/~tutreeb/sentipolc-evalita14/ | gold    |
-| ironita   | classification | Evalita 2018    | Binary classification task of tweets with or without irony                             | http://twita.di.unito.it/dataset/ironita             | gold    |
+| Task      | Type           | Source          | Description                                                                                  | Link                                                                     | Quality |
+|-----------|----------------|-----------------|----------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|---------|
+| sentipolc | classification | Evalita 2014    | Binary classification task of positive or negative tweets (gold test set)                    | http://www.di.unito.it/~tutreeb/sentipolc-evalita14/                     | gold    |
+| ironita   | classification | Evalita 2018    | Binary classification task of tweets with or without irony (gold test set)                   | http://twita.di.unito.it/dataset/ironita                                 | gold    |
+| ami2020   | classification | Evalita 2020    | Binary classification task of misogynous tweets (gold test set)                              | https://live.european-language-grid.eu/catalogue/corpus/7005             | gold    |
+
 
 ## Installation
 
