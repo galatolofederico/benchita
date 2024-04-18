@@ -6,3 +6,4 @@ from benchita.task.evalita.sentipolc import Sentipolc
 from benchita.task.evalita.ami2020 import AMI2020
 
 from benchita.task.xcopa import XCopa
+from benchita.task.openbookqa import OpenbookQA
