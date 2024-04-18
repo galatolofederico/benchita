@@ -12,12 +12,14 @@ High quality few-shots benchmarks for Italian LLMs.
 
 ## Implemented tasks
 
-| Task      | Type           | Source          | Description                                                                                  | Link                                                                     | Quality |
-|-----------|----------------|-----------------|----------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|---------|
-| sentipolc | classification | Evalita 2014    | Binary classification task of positive or negative tweets (gold test set)                    | http://www.di.unito.it/~tutreeb/sentipolc-evalita14/                     | gold    |
-| ironita   | classification | Evalita 2018    | Binary classification task of ironic tweets (gold test set)                                  | http://twita.di.unito.it/dataset/ironita                                 | gold    |
-| ami2020   | classification | Evalita 2020    | Binary classification task of misogynous tweets (gold test set)                              | https://live.european-language-grid.eu/catalogue/corpus/7005             | gold    |
-| xcopa     | classification | XCOPA Paper     | Translation and re-annotation of the Choice of Plausible Alternatives Dataset                | https://github.com/cambridgeltl/xcopa                                    | silver  |
+| Task           | Type               | Source       | Description                                                                   | Link                                                               | Quality |
+|----------------|--------------------|--------------|-------------------------------------------------------------------------------|--------------------------------------------------------------------|---------|
+| sentipolc      | classification     | Evalita 2014 | Binary classification task of positive or negative tweets (gold test set)     | http://www.di.unito.it/~tutreeb/sentipolc-evalita14/               | gold    |
+| ironita        | classification     | Evalita 2018 | Binary classification task of ironic tweets (gold test set)                   | http://twita.di.unito.it/dataset/ironita                           | gold    |
+| ami2020        | classification     | Evalita 2020 | Binary classification task of misogynous tweets (gold test set)               | https://live.european-language-grid.eu/catalogue/corpus/7005       | gold    |
+| xcopa          | classification     | XCOPA Paper  | Translation and re-annotation of the Choice of Plausible Alternatives Dataset | https://github.com/cambridgeltl/xcopa                              | silver  |
+| openbookqa-ITA | classification     | OpenBookQA   | Classification task among four possible answers to choose                     | https://github.com/allenai/OpenBookQA                              | silver  |
+| SQuAD_it       | Question Answering | SQuAD Paper  | Open-ended question answering task                                            | https://arxiv.org/abs/1606.05250                                   | gold    |
 
 
 ## Roadmap
@@ -27,9 +29,6 @@ High quality few-shots benchmarks for Italian LLMs.
 - [ ] Inference on multiple GPUs with 🤗 accelerate
 - [ ] Support for `int8` and other quantization techniques
 - [ ] Support for 🤗 peft adapters 
-
-### Dataset
-- [ ] squad-it
 
 ## Installation
 

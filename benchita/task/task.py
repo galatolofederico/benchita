@@ -8,32 +8,32 @@ class Task(Sequence):
         self.base_folder = base_folder
 
     def __len__(self):
-        raise NotImplementedError
+        raise NotImplementedError("__len__ is not implemented")
 
     def __getitem__(self, idx):
-        raise NotImplementedError
+        raise NotImplementedError("__getitem__ is not implemented")
 
     def evaluate(self, inference_inputs, inference_outputs):
-        raise NotImplementedError
+        raise NotImplementedError("evaluate is not implemented")
     
     def results_summary(self, results):
-        raise NotImplementedError
+        raise NotImplementedError("results_summary is not implemented")
 
     @property
     def system(self):
-        raise NotImplementedError
+        raise NotImplementedError("system is not implemented")
 
     @property
     def inject_confirmation(self):
-        raise NotImplementedError
+        raise NotImplementedError("inject_confirmation not implemented")
     
     @property
     def inject_confirmation_reply(self):
-        raise NotImplementedError
+        raise NotImplementedError("inject_confermation_reply is not implemented")
     
     @property
     def max_new_tokens(self):
-        raise NotImplementedError
+        raise NotImplementedError("max_new_tokens is not implemented")
 
     @property
     def task_name(self):
@@ -80,8 +80,14 @@ class Task(Sequence):
                 role="user",
                 content=current["input"]
             ))
+            out = dict(messages=messages, expected=current["output"])
 
-            yield dict(messages=messages, expected=current["output"])
+            try:
+                out["id"] = current["id"]
+                out["answer_start"] = current["answer_start"]
+            except KeyError:
+                pass
+            yield out
 
     
 
