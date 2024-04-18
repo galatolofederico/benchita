@@ -3,7 +3,7 @@ import enum
 from benchita.task import SquadV2Task, register_task
 
 
-@register_task("squad_it")
+@register_task("squad")
 class SquadIT(SquadV2Task):
     def __init__(self):
         super().__init__()

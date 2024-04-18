@@ -1,7 +1,7 @@
 from benchita.task import get_task
 
 def test_squadIT():
-    ds = get_task("squad_it")()
+    ds = get_task("squad")()
     assert len(ds) == 7609
 
     expected_ds0 = {

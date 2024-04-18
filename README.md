@@ -19,7 +19,7 @@ High quality few-shots benchmarks for Italian LLMs.
 | ami2020        | classification     | Evalita 2020 | Binary classification task of misogynous tweets (gold test set)               | https://live.european-language-grid.eu/catalogue/corpus/7005       | gold    |
 | xcopa          | classification     | XCOPA Paper  | Translation and re-annotation of the Choice of Plausible Alternatives Dataset | https://github.com/cambridgeltl/xcopa                              | silver  |
 | openbookqa     | classification     | OpenBookQA   | Classification task among four possible answers to choose                     | https://github.com/allenai/OpenBookQA                              | silver  |
-| squad_it       | Question Answering | SQuAD Paper  | Open-ended question answering task                                            | https://arxiv.org/abs/1606.05250                                   | gold    |
+| squad          | Question Answering | SQuAD Paper  | Open-ended question answering task                                            | https://arxiv.org/abs/1606.05250                                   | silver  |
 
 
 ## Roadmap

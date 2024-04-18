@@ -8,4 +8,4 @@ from benchita.task.evalita.ami2020 import AMI2020
 
 from benchita.task.xcopa import XCopa
 from benchita.task.openbookqa import OpenbookQA
-from benchita.task.squad_it import SquadIT
+from benchita.task.squad import SquadIT
