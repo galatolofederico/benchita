@@ -2,7 +2,7 @@ import os
 import json
 import hashlib
 
-from benchita.logging import log_info
+from benchita.logging import log_info, log_error
 from benchita.evaluate import evaluate
 
 def get_job_name(job):
@@ -27,4 +27,5 @@ def run_job(*, job, device, args, experiment_name, worker_id):
             log_info(f"Running job {job_name}")
             return evaluate(job=job, device=device, args=args, results_file=results_file, worker_id=worker_id)
     except Exception as e:
-        print(e)
+        #print(e)
+        log_error(message=e, worker_id=worker_id)
