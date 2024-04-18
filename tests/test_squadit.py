@@ -34,13 +34,15 @@ def test_squadIT():
         }
 
     ]
-    inference_outputs = [[{'answers': {'text': ['ottobre 1973', 'ottobre 1973', 'ottobre 1973', 'ottobre', '1973'],'answer_start': [43, 43, 43, 43, 25]}, 'id': '5725b33f6a3fe71400b8952d'}]]
+    inference_outputs = ['ottobre 1973', 'ottobre 1973', 'ottobre 1973', 'ottobre', '1973', 'sbaglio']
 
     inference = []
     for elem, output in zip(inference_inputs, inference_outputs):
         inference.append({
+            "id": elem["expected"][0]["id"],
             "messages": elem["messages"],
-            "expected": elem["expected"],
+            "expected": elem["expected"][0]["answers"]["text"][0],
+            "answer_start": elem["expected"][0]["answers"]["answer_start"][0],
             "prompt": elem["messages"][-1]["content"],
             "output": output
         })
