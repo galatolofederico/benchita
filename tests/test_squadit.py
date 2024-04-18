@@ -1,5 +1,4 @@
 from benchita.task import get_task
-from benchita.task import squad_it
 
 def test_squadIT():
     ds = get_task("squad_it")()
@@ -49,7 +48,3 @@ def test_squadIT():
     results = ds.evaluate(inference)
     assert results['exact'] == 100.0
     # print(ds.results_summary(results))
-
-
-module = squad_it.SquadIT()
-test_squadIT()
