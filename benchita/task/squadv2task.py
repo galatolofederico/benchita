@@ -4,7 +4,7 @@ import pandas as pd
 from benchita.task import Task
 
 
-class ComprehensionTask(Task):
+class SquadV2Task(Task):
 
     def evaluate(self, inference):
         # https://huggingface.co/spaces/evaluate-metric/squad_v2
