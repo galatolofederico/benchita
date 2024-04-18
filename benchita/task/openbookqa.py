@@ -44,6 +44,7 @@ class OpenbookQA(ClassificationTask):
     def inject_confirmation_reply(self):
         return ("Si, sono pronto a procedere con la classificazione. "
                 "Risponderò soltanto con l'opzione corretta tra 'A', 'B', 'C' o 'D' senza aggiungere commenti. Procediamo.")
-    # @property
-    # def max_new_tokens(self):
-    #     return 1
+
+    @property
+    def max_new_tokens(self):
+        return 2
