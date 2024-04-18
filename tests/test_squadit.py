@@ -47,8 +47,8 @@ def test_squadIT():
         })
 
     results = ds.evaluate(inference)
-    # print(results)
     assert results['exact'] == 100.0
+    # print(ds.results_summary(results))
 
 
 module = squad_it.SquadIT()

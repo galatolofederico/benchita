@@ -1,4 +1,6 @@
 import evaluate
+import pandas as pd
+
 from benchita.task import Task
 
 
@@ -28,3 +30,15 @@ class ComprehensionTask(Task):
 
         result = metric.compute(references=references, predictions=predictions)
         return result
+
+    def results_summary(self, results):
+        exact = results['exact']
+        f1 = results['f1']
+        total = results['total']
+
+        return pd.DataFrame({
+            "Task": [self.task_name],
+            "Exact Matching": [exact],
+            "F1": [f1],
+            "Total": [total]
+        })
