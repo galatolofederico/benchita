@@ -1,4 +1,4 @@
-from benchita.task import Task, ClassificationTask
+from benchita.task import Task, ClassificationTask, SquadV2Task
 import random
 import string
 from tqdm import tqdm
@@ -6,7 +6,7 @@ from tqdm import tqdm
 class DummyModel():
     def __init__(self, task):
         self.task = task
-        if isinstance(task, Task):
+        if isinstance(task, ClassificationTask):
             self.task_type = "classification"
         else:
             self.task_type = "generic"
@@ -20,6 +20,7 @@ class DummyModel():
         elif self.task_type == "generic":
             if isinstance(elem["expected"], str):
                 output = elem["expected"]
+            # Warning - tokenizer.apply_chat_template does not support expected as a list!
             elif isinstance(elem["expected"], list):
                 output = random.choice(elem["expected"])
             else:
@@ -32,11 +33,16 @@ class DummyModel():
 
     def simulate_inference(self, dataset):
         ret = []
-        for elem in tqdm(dataset):
-            ret.append({
+        for elem in tqdm(dataset, desc="Inference"):
+            d = {
                 "messages": elem["messages"],
                 "expected": elem["expected"],
                 "input": elem["prompt"],
                 "output": self.simulate_output(elem)
-            })
+            }
+            if isinstance(self.task, SquadV2Task):
+                d["id"] = elem["id"]
+                d["answer_start"] = elem["answer_start"]
+
+            ret.append(d)
         return ret
