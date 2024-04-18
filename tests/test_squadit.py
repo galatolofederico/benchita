@@ -10,7 +10,7 @@ def test_squadIT():
     }
 
     assert ds[0]["input"] == expected_ds0["input"]
-    assert ds[0]["output"] == expected_ds0["output"]
+    assert ds[0]["output"] == expected_ds0["output"][0]["answers"]["text"][0]
 
     elem = next(iter(ds.build(num_shots=3, system_style="inject")))
     assert "messages" in elem
