@@ -45,7 +45,7 @@ def run_inference(*, dataset, model, tokenizer, task, batch_size, generate_args,
                     "messages": messages,
                     "expected": expected,
                     "input": prompt,
-                    "output": output
+                    "output": output.strip()
                 })
 
             # TODO - NOT TESTED YET!
