@@ -1,6 +1,5 @@
-import evaluate
+import evaluate as evaluate_hf
 import pandas as pd
-
 from benchita.task import Task
 
 
@@ -8,24 +7,24 @@ class SquadV2Task(Task):
 
     def evaluate(self, inference):
         # https://huggingface.co/spaces/evaluate-metric/squad_v2
-        metric = evaluate.load("squad_v2")
+        metric = evaluate_hf.load("squad_v2")
 
         references = []
         predictions = []
 
         for elem in inference:
             predictions.append({
-                "prediction_text": elem["output"][0]["answers"]["text"][0],
-                "id": elem["output"][0]["id"],
+                "prediction_text": elem["output"],
+                "id": elem["id"],
                 "no_answer_probability": 0.
             })
 
             references.append({
                 "answers": {
-                    "answer_start": elem["expected"][0]["answers"]["answer_start"],
-                    "text": elem["expected"][0]["answers"]["text"]
+                    "answer_start": [elem["answer_start"]],
+                    "text": [elem["expected"]]
                 },
-                "id": elem["expected"][0]["id"]
+                "id": elem["id"],
             })
 
         result = metric.compute(references=references, predictions=predictions)

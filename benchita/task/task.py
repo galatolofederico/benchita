@@ -80,8 +80,14 @@ class Task(Sequence):
                 role="user",
                 content=current["input"]
             ))
+            out = dict(messages=messages, expected=current["output"])
 
-            yield dict(messages=messages, expected=current["output"])
+            try:
+                out["id"] = current["id"]
+                out["answer_start"] = current["answer_start"]
+            except KeyError:
+                pass
+            yield out
 
     
 

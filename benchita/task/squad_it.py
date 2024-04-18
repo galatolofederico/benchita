@@ -14,18 +14,32 @@ class SquadIT(SquadV2Task):
 
     def __getitem__(self, idx):
         elem = self.ds[idx]
-        id = elem["id"]
+
         context = elem['context']
         question = elem['question']
-        answers = [{"answers": elem['answers']}]
-        answers = [{**answer, "id": elem["id"]} for answer in answers]
-
         text = context + "\n" + question
+
+        # Warning - tokenizer.apply_chat_template does not support expected as a list!
+        answers = elem['answers']['text'][0]
+
         return {
-            "id": id,
+            "id": elem["id"],
+            "answer_start": elem["answers"]["answer_start"][0],
             "input": text,
             "output": answers
         }
+        # id = elem["id"]
+        # context = elem['context']
+        # question = elem['question']
+        # answers = [{"answers": elem['answers']}]
+        # answers = [{**answer, "id": elem["id"]} for answer in answers]
+        #
+        # text = context + "\n" + question
+        # return {
+        #     "id": id,
+        #     "input": text,
+        #     "output": answers
+        # }
 
     @property
     def system(self):
@@ -38,3 +52,8 @@ class SquadIT(SquadV2Task):
     @property
     def inject_confirmation_reply(self):
         return "Si, sono pronto a rispondere alla domanda. Risponderò in modo breve e coinciso."
+
+    @property
+    def max_new_tokens(self):
+        return 100
+

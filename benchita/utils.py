@@ -3,10 +3,13 @@ import torch
 from datasets import Dataset
 import itertools
 
+from benchita.task import SquadV2Task
+
 
 def build_inference_dataset(*, tokenizer, task, num_shots, system_style, chat_template, apply_chat_template_args, max_length):
     inference_inputs = []
-    for elem in tqdm(task.build(num_shots=num_shots, system_style=system_style), total=len(task)):
+
+    for elem in tqdm(task.build(num_shots=num_shots, system_style=system_style), total=len(task), desc="Building Dataset"):
         elem["prompt"] = chat_template(
             elem["messages"],
             **apply_chat_template_args
@@ -44,6 +47,12 @@ def run_inference(*, dataset, model, tokenizer, task, batch_size, generate_args,
                     "input": prompt,
                     "output": output
                 })
+
+            # TODO - NOT TESTED YET!
+            if isinstance(task, SquadV2Task):
+                for k, j in enumerate(range(i, i+batch_size)):
+                    inference_outputs[j]['id'] = batch["id"][k]
+                    inference_outputs[j]['answer_start'] = batch["answer_start"][k]
 
         if dry_run:
             break
