@@ -1,10 +1,10 @@
 import datasets
 import enum
-from benchita.task import ComprehensionTask, register_task
+from benchita.task import SquadV2Task, register_task
 
 
 @register_task("squad_it")
-class SquadIT(ComprehensionTask):
+class SquadIT(SquadV2Task):
     def __init__(self):
         super().__init__()
         self.ds = datasets.load_dataset("squad_it")["test"]
