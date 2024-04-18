@@ -1,5 +1,4 @@
 from benchita.task import get_task
-from benchita.task import openbookqa
 
 def test_openbook():
     ds = get_task("openbook")()
@@ -51,8 +50,3 @@ def test_openbook():
     results = ds.evaluate(inference)
     # print(results)
     assert results['accuracy'] == 1.0
-
-
-
-module = openbookqa.OpenbookQA()
-test_openbook()
