@@ -53,5 +53,6 @@ def test_openbook():
     assert results['accuracy'] == 1.0
 
 
+
 module = openbookqa.OpenbookQA()
 test_openbook()
