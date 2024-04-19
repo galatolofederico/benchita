@@ -26,7 +26,8 @@ setuptools.setup(
         "pandas>=2.2.1",
         "scikit-learn>=1.4.2",
         "termcolor>=2.4.0",
-        "pydantic>=2.7.0"
+        "pydantic>=2.7.0",
+        "evaluate>=0.4.1"
     ],
     classifiers=[
         "Programming Language :: Python :: 3.11",
