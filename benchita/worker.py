@@ -4,7 +4,7 @@ from benchita.job import run_job
 def worker(*, jobs_queue, results_queue, worker_id, device, args, experiment_name):
     while True:
         try:
-            job = jobs_queue.get(False)
+            job = jobs_queue.get(timeout=5)
             log_info(f"Worker got a job... (remaing jobs = {jobs_queue.qsize()})", worker_id=worker_id)
             results = run_job(
                 job=job,
