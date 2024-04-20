@@ -54,9 +54,6 @@ def evaluate(*, job, args, results_file, device, worker_id=0):
 
     log_info("Loading task...", worker_id=worker_id)
     task = task_cls()
-
-    if hasattr(tokenizer, "model_max_length") and tokenizer.model_max_length < model_config.tokenizer.max_length + task.max_new_tokens:
-        log_error(f"The model max_length ({tokenizer.model_max_length}) is smaller than the sum of the tokenized max_length ({model_config.tokenizer.max_length}) and the generated max_new_tokens ({task.max_new_tokens}). Consider decreasing the tokenized max_length setting max_length in the tokenizer config", worker_id=worker_id)
     
     if args.dummy_run:
         log_warn("Loading dummy model...", worker_id=worker_id)
@@ -77,7 +74,6 @@ def evaluate(*, job, args, results_file, device, worker_id=0):
         system_style=model_config.template.system_style,
         chat_template=chat_template,
         apply_chat_template_args=model_config.template.args,
-        max_length=model_config.tokenizer.max_length
     )
 
     if args.dry_run:

@@ -20,7 +20,6 @@ class Tokenizer(BaseModel):
     name: str = None
     class_name: str = Field(alias="class", default="AutoTokenizer")
     patch_tokenizer_pad: bool = False
-    max_length: int = 1024
     args: dict = {}
 
 class Template(BaseModel):
