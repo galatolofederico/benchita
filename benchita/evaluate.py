@@ -74,6 +74,7 @@ def evaluate(*, job, args, results_file, device, worker_id=0):
         system_style=model_config.template.system_style,
         chat_template=chat_template,
         apply_chat_template_args=model_config.template.args,
+        worker_id=worker_id
     )
 
     if args.dry_run:

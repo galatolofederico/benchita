@@ -6,7 +6,7 @@ import itertools
 from benchita.logging import log_info
 from benchita.task import SquadV2Task
 
-def build_inference_dataset(*, tokenizer, task, num_shots, system_style, chat_template, apply_chat_template_args):
+def build_inference_dataset(*, tokenizer, task, num_shots, system_style, chat_template, apply_chat_template_args, worker_id):
     inference_inputs = []
 
     for elem in tqdm(task.build(num_shots=num_shots, system_style=system_style), total=len(task), desc="Building Dataset"):
@@ -21,8 +21,8 @@ def build_inference_dataset(*, tokenizer, task, num_shots, system_style, chat_te
         tokens = tokenizer.tokenize(elem["prompt"])
         max_length = max(max_length, len(tokens))
     max_length += 1
-    
-    log_info(f"Using max_length={max_length}")
+
+    log_info(f"Using max_length={max_length}", worker_id=worker_id)
 
     inference_ds = Dataset.from_list(inference_inputs)
     inference_ds = inference_ds.map(lambda x: tokenizer(x["prompt"], padding="max_length", truncation=False, max_length=max_length), batched=True)

@@ -34,8 +34,7 @@ def main():
     jobs_queue = mp.Queue()
     results_queue = mp.Queue()
 
-    for job in jobs: jobs_queue.put_nowait(job)
-
+    for job in jobs: jobs_queue.put(job)
 
     if args.no_parallel:
         for job in jobs:
@@ -48,7 +47,7 @@ def main():
                 experiment_name=config.experiment
             )
     else:
-        log_info(f"Running jobs in parallel using {len(args.devices)} devices")
+        log_info(f"Running {jobs_queue.qsize()} jobs in parallel using {len(args.devices)} devices")
 
         workers = []
         for i, device in enumerate(args.devices):
