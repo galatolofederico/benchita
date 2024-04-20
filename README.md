@@ -82,8 +82,6 @@ models:
       name: galatolo/cerbero-7b
       class: AutoModelForCausalLM
       dtype: float16
-    tokenizer:
-      max_length: 1024
     template:
       system_style: inject
     generate:
@@ -94,8 +92,6 @@ models:
       name: galatolo/cerbero-7b-openchat
       class: AutoModelForCausalLM
       dtype: float16
-    tokenizer:
-      max_length: 1024
     template:
       system_style: inject
     generate:
