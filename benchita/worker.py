@@ -6,14 +6,15 @@ def worker(*, jobs_queue, results_queue, worker_id, device, args, experiment_nam
         try:
             job = jobs_queue.get(timeout=5)
             log_info(f"Worker got a job... (remaing jobs = {jobs_queue.qsize()})", worker_id=worker_id)
-            results = run_job(
-                job=job,
-                device=device,
-                worker_id=worker_id,
-                args=args,
-                experiment_name=experiment_name
-            )
-            results_queue.put(results)
         except:
             log_info(f"No more jobs available, exiting...", worker_id=worker_id)
             break
+
+        results = run_job(
+            job=job,
+            device=device,
+            worker_id=worker_id,
+            args=args,
+            experiment_name=experiment_name
+        )
+        results_queue.put(results)
