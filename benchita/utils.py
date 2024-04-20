@@ -20,7 +20,8 @@ def build_inference_dataset(*, tokenizer, task, num_shots, system_style, chat_te
     for elem in tqdm(inference_inputs):
         tokens = tokenizer.tokenize(elem["prompt"])
         max_length = max(max_length, len(tokens))
-
+    max_length += 1
+    
     log_info(f"Using max_length={max_length}")
 
     inference_ds = Dataset.from_list(inference_inputs)
