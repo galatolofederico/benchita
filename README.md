@@ -5,10 +5,11 @@ High quality few-shots benchmarks for Italian LLMs.
 ## Features 
 
 - 🚀 **Parallel Execution**: Distributes jobs (model+task) across all available GPUs in parallel.
+- 💾 **Intelligent Caching**: Smartly caches results to avoid ever running the same experiment twice
 - ✅ **Easy to Use**: Straightforward setup and operation.
 - 🎨 **Chat Template Support**: Integrates smoothly with 🤗 chat templates.
 - 🛠️ **Custom Template Support**: Easily implement user-defined templates.
-- 🗨️ **Versatile Evaluation**: Capable of assessing both **pretrained** and **chat** models
+- 🗨️ **Versatile Evaluation**: Capable of assessing both pretrained and chat models
 
 ## Implemented tasks
 
