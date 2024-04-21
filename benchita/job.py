@@ -1,6 +1,7 @@
 import os
 import json
 import hashlib
+import traceback
 
 from benchita.logging import log_info, log_error
 from benchita.evaluate import evaluate
@@ -27,5 +28,6 @@ def run_job(*, job, device, args, experiment_name, worker_id):
             log_info(f"Running job {job_name}")
             return evaluate(job=job, device=device, args=args, results_file=results_file, worker_id=worker_id)
     except Exception as e:
-        #print(e)
-        log_error(message=e, worker_id=worker_id)
+        traceback_details = traceback.format_exc()
+        error_message = f"An error occurred while processing job {job_name}: {str(e)}\nTraceback for the error: {traceback_details}"
+        log_error(error_message, worker_id=worker_id)

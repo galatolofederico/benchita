@@ -56,8 +56,9 @@ def run_inference(*, dataset, model, tokenizer, task, batch_size, generate_args,
                     "output": output.strip()
                 })
 
+            actual_batch_size = len(batch["input_ids"])
             if isinstance(task, SquadV2Task):
-                for k, j in enumerate(range(i, i+batch_size)):
+                for k, j in enumerate(range(i, i+actual_batch_size)):
                     inference_outputs[j]['id'] = batch["id"][k]
                     inference_outputs[j]['answer_start'] = batch["answer_start"][k]
 
