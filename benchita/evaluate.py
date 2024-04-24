@@ -60,11 +60,21 @@ def evaluate(*, job, args, results_file, device, worker_id=0):
         model = DummyModel(task)
     else:
         log_info("Loading model...", worker_id=worker_id)
-        model = model_cls.from_pretrained(
-            model_config.model.name,
-            torch_dtype=getattr(torch, model_config.model.dtype),
-            **model_config.model.args
-        ).to(device)
+        if "load_in_8bit" in model_config.model.args and model_config.model.args["load_in_8bit"]:
+            log_warn("bitsandbytes does not support parallel inference, setting device_map to auto")
+            if not args.no_parallel:
+                log_error("bitsandbytes does not support parallel inference, run benchita with --no-parallel")
+            model = model_cls.from_pretrained(
+                model_config.model.name,
+                device_map="auto",
+                **model_config.model.args
+            )
+        else:
+            model = model_cls.from_pretrained(
+                model_config.model.name,
+                torch_dtype=getattr(torch, model_config.model.dtype),
+                **model_config.model.args
+            ).to(device)
         if model_config.peft is not None:
             try:
                 import peft
