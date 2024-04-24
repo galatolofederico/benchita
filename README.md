@@ -29,7 +29,7 @@ High quality few-shots benchmarks for Italian LLMs.
 
 - [ ] Inference on multiple GPUs with 🤗 accelerate
 - [ ] Support for `int8` and other quantization techniques
-- [ ] Support for 🤗 peft adapters 
+- [x] Support for 🤗 peft adapters 
 
 ## Installation
 
