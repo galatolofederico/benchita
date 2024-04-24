@@ -1,6 +1,6 @@
 import yaml
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
 
 from benchita.task import get_tasks
 from benchita.template import get_templates
@@ -28,6 +28,11 @@ class Template(BaseModel):
     force: bool = False
     args: dict = {"add_generation_prompt": True, "tokenize": False}
 
+class PeftAdapter(BaseModel):
+    name: str
+    class_name: str = Field(alias="class", default="PeftModel")
+    args: dict = {}
+
 class Generate(BaseModel):
     batch_size: int = 16
     args: dict = {"do_sample": False}
@@ -37,6 +42,7 @@ class ModelConfig(BaseModel):
     tokenizer: Tokenizer = Tokenizer()
     template: Template = Template()
     generate: Generate = Generate()
+    peft: Optional[PeftAdapter] = None
 
 class Config(BaseModel):
     experiment: str

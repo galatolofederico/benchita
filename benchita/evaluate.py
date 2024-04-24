@@ -65,6 +65,15 @@ def evaluate(*, job, args, results_file, device, worker_id=0):
             torch_dtype=getattr(torch, model_config.model.dtype),
             **model_config.model.args
         ).to(device)
+        if model_config.peft is not None:
+            try:
+                import peft
+            except:
+                log_error("Peft model specified in config but not peft module installed, please `pip install peft`", worker_id=worker_id)
+            peft_cls = getattr(peft, model_config.peft.class_name)
+            log_info(f"Peft: {model_config.peft.class_name} (class: {peft_cls.__name__})", worker_id=worker_id)
+            log_info(f"Peft args: {model_config.peft.args}", worker_id=worker_id)
+            model = peft_cls.from_pretrained(model, model_config.peft.name, **model_config.peft.args)
 
     log_info("Building inference dataset...", worker_id=worker_id)
     inference_ds = build_inference_dataset(
@@ -99,7 +108,8 @@ def evaluate(*, job, args, results_file, device, worker_id=0):
     results = task.evaluate(inference)
 
     summary = task.results_summary(results)
-    summary.index = [model_config.model.name]
+    model_name = model_config.model.name + ("_" + model_config.peft.name) if model_config.peft is not None else ""
+    summary.index = [model_name]
     
     log_info("Results summary:", worker_id=worker_id)
     print(summary)

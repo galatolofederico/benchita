@@ -7,7 +7,9 @@ from benchita.logging import log_info, log_error
 from benchita.evaluate import evaluate
 
 def get_job_name(job):
-    job_config = json.dumps(dict(task=job["task"].model_dump(), model=job["model"].model_dump()), sort_keys=True)
+    job_dict = dict(task=job["task"].model_dump(), model=job["model"].model_dump())
+    if job_dict["model"]["peft"] is None: del job_dict["model"]["peft"]  # correctly reuse pre-peft cached results
+    job_config = json.dumps(job_dict, sort_keys=True)
     hash = hashlib.sha256(job_config.encode("utf-8")).hexdigest()
     name = f"{job['model'].model.name}-{job['task'].name}-{hash[:16]}"
     name = name.replace("/", "_")
