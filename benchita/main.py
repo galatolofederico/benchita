@@ -1,6 +1,4 @@
 import argparse
-import json
-
 import torch
 import pandas as pd
 import torch.multiprocessing as mp
@@ -23,6 +21,7 @@ def main():
     parser.add_argument("--devices", type=int, default=None, nargs="*", help="The devices to use")
     parser.add_argument("--device", type=str, default="cuda", help="Device to use when --no-parallel")
     parser.add_argument("--no-parallel", action="store_true", help="Do not use parallelism")
+    parser.add_argument("--store-inference", action="store_true", help="Store inference outputs")
     
     args = parser.parse_args()
 
@@ -33,8 +32,9 @@ def main():
     if args.devices is None:
         args.devices = list(range(torch.cuda.device_count()))
 
-    jobs_queue = mp.Queue()
-    results_queue = mp.Queue()
+    manager = mp.Manager()
+    jobs_queue = manager.Queue()
+    results_queue = manager.Queue()
 
     for job in jobs: jobs_queue.put(job)
 
@@ -81,16 +81,17 @@ def main():
         results_path = os.path.join(args.results_dir, config.experiment)
 
         # save inference results
-        output_file = os.path.join(results_path, "output.csv")
-        output_results = pd.concat([pd.DataFrame([{
-            "model_name": result["model"]["model"]["name"],
-            "task_name": result["task"]["name"],
-            "model_input": elem["model_input"],
-            "output": elem["output"]
-        }]) for result in results for elem in result["outputs"]])
+        if args.store_inference:
+            output_file = os.path.join(results_path, "output.csv")
+            output_results = pd.concat([pd.DataFrame([{
+                "model_name": result["model"]["model"]["name"],
+                "task_name": result["task"]["name"],
+                "model_input": elem["model_input"],
+                "output": elem["output"]
+            }]) for result in results for elem in result["outputs"]])
 
-        output_results.to_csv(output_file)
-        log_info(f"Outputs saved in {output_file}")
+            output_results.to_csv(output_file)
+            log_info(f"Outputs saved in {output_file}")
 
         # save evaluation results
         results_file = os.path.join(results_path, "summary.csv")
