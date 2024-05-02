@@ -38,6 +38,7 @@ class DummyModel():
                 "messages": elem["messages"],
                 "expected": elem["expected"],
                 "input": elem["prompt"],
+                "model_input": elem["model_input"],
                 "output": self.simulate_output(elem)
             }
             if isinstance(self.task, SquadV2Task):
