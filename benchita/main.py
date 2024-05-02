@@ -1,4 +1,6 @@
 import argparse
+import json
+
 import torch
 import pandas as pd
 import torch.multiprocessing as mp
@@ -77,6 +79,20 @@ def main():
 
     if not args.dummy_run and not args.dry_run:
         results_path = os.path.join(args.results_dir, config.experiment)
+
+        # save inference results
+        output_file = os.path.join(results_path, "output.csv")
+        output_results = pd.concat([pd.DataFrame([{
+            "model_name": result["model"]["model"]["name"],
+            "task_name": result["task"]["name"],
+            "model_input": elem["model_input"],
+            "output": elem["output"]
+        }]) for result in results for elem in result["outputs"]])
+
+        output_results.to_csv(output_file)
+        log_info(f"Outputs saved in {output_file}")
+
+        # save evaluation results
         results_file = os.path.join(results_path, "summary.csv")
         summary.to_csv(results_file)
         log_info(f"Results saved in {results_file}")
