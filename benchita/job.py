@@ -22,7 +22,7 @@ def run_job(*, job, device, args, experiment_name, worker_id):
         os.makedirs(results_path, exist_ok=True)
         results_file = os.path.join(results_path, f"{job_name}.json")
         if os.path.exists(results_file):
-            log_info(f"Skipping job {job_name}, results already exist")
+            log_info(f"Skipping job {job_name}, results already exist", worker_id=worker_id)
             with open(results_file, "r") as f:
                 results = json.load(f)
             return results
