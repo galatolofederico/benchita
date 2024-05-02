@@ -5,8 +5,8 @@ _option_labels = ["A", "B", "C", "D"]
 
 @register_task("openbook")
 class OpenbookQA(ClassificationTask):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, config):
+        super().__init__(config)
         self.ds = datasets.load_dataset("yuri-no/openbookqa-ITA")["test"]
 
     def __len__(self):

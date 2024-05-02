@@ -5,8 +5,8 @@ from benchita.task import SquadV2Task, register_task
 
 @register_task("squad")
 class SquadIT(SquadV2Task):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, config):
+        super().__init__(config)
         self.ds = datasets.load_dataset("squad_it")["test"]
 
     def __len__(self):

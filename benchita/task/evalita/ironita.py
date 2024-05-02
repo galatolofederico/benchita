@@ -9,13 +9,14 @@ class IronItaLabel(Enum):
 
 @register_task("ironita")
 class IronIta(ClassficationTaskFromCSV):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, config):
         super().__init__(
             csv_file="evalita/ironita/ironita.csv",
             text_column="text",
             label_column="irony",
             read_csv_kwargs={"sep": ";"},
             labels=IronItaLabel,
+            config=config
         )
 
     @property

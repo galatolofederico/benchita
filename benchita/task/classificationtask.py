@@ -54,8 +54,8 @@ class ClassificationTask(Task):
 
 
 class ClassficationTaskFromCSV(ClassificationTask):
-    def __init__(self, *, csv_file, text_column, label_column, labels, read_csv_kwargs={}, join_base_folder=True):
-        super().__init__()
+    def __init__(self, *, csv_file, text_column, label_column, labels, config, read_csv_kwargs={}, join_base_folder=True):
+        super().__init__(config)
         if join_base_folder: csv_file = os.path.join(self.base_folder, csv_file)
         self.df = pd.read_csv(csv_file, **read_csv_kwargs)
                 

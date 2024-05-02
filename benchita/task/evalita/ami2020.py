@@ -9,13 +9,14 @@ class AMI2020Labels(Enum):
 
 @register_task("ami2020")
 class AMI2020(ClassficationTaskFromCSV):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, config):
         super().__init__(
             csv_file="evalita/ami2020/ami2020.tsv",
             text_column="text",
             label_column="misogynous",
             read_csv_kwargs={"sep": "\t"},
             labels=AMI2020Labels,
+            config=config
         )
 
     @property

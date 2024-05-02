@@ -9,13 +9,14 @@ class SentipolcLabel(Enum):
 
 @register_task("sentipolc")
 class Sentipolc(ClassficationTaskFromCSV):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, config):
         super().__init__(
             csv_file="evalita/sentipolc/sentipolc.csv",
             text_column="tweet",
             label_column="negativo",
             read_csv_kwargs={"sep": ";"},
             labels=SentipolcLabel,
+            config=config
         )
 
     @property

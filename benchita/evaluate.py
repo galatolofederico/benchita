@@ -53,7 +53,7 @@ def evaluate(*, job, args, results_file, device, worker_id=0):
         log_error("Tokenizer does not have a pad token, please use a tokenizer with a pad token or specify patch_tokenizer_pad=True in the tokenizer config to patch it", worker_id=worker_id)
 
     log_info("Loading task...", worker_id=worker_id)
-    task = task_cls()
+    task = task_cls(task_config)
     
     if args.dummy_run:
         log_warn("Loading dummy model...", worker_id=worker_id)

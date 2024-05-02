@@ -5,8 +5,8 @@ from benchita.task import ClassificationTask, register_task
 
 @register_task("xcopa")
 class XCopa(ClassificationTask):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, config):
+        super().__init__(config)
         self.ds = datasets.load_dataset("xcopa", "it")["test"]
 
     def __len__(self):

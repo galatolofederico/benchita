@@ -4,7 +4,8 @@ from collections.abc import Sequence
 _task_registry = dict()
 
 class Task(Sequence):
-    def __init__(self, base_folder="./assets"):
+    def __init__(self, config, base_folder="./assets"):
+        self._config = config
         self.base_folder = base_folder
 
     def __len__(self):
