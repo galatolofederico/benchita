@@ -8,7 +8,8 @@ from benchita.task import register_task
 class StaticTask(Task):
     def __init__(self, config):
         super(StaticTask, self).__init__(config)
-        print(config)
+        if config.num_shots != 0:
+            raise ValueError("StaticTask supports only num_shots=0")
         self.fname = config.args["file"]
         self.ds = json.load(open(self.fname))
 
@@ -34,7 +35,6 @@ class StaticTask(Task):
 
     def results_summary(self, results):
         accuracy = results["accuracy"]
-        f1_macro = results["macro avg"]["f1-score"]
 
         return pd.DataFrame({
             "Task": [self.task_name],
