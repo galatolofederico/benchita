@@ -48,10 +48,11 @@ def run_inference(*, dataset, model, tokenizer, task, batch_size, generate_args,
 
             outputs = tokenizer.batch_decode(outputs[:, input_ids.size(1):], skip_special_tokens=True)
 
-            for messages, expected, prompt, output in zip(batch["messages"], batch["expected"], batch["prompt"], outputs):
+            for messages, expected, prompt, model_input, output in zip(batch["messages"], batch["expected"], batch["prompt"], batch["model_input"], outputs):
                 inference_outputs.append({
                     "messages": messages,
                     "expected": expected,
+                    "model_input": model_input,
                     "input": prompt,
                     "output": output.strip()
                 })

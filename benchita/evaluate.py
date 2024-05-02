@@ -123,12 +123,20 @@ def evaluate(*, job, args, results_file, device, worker_id=0):
     
     log_info("Results summary:", worker_id=worker_id)
     print(summary)
-
+    
+    inference_outputs = [
+        dict(
+            prompt=elem["input"],
+            model_input=elem["model_input"],
+            output=elem["output"],
+        ) for elem in inference
+    ]
     final_results = dict(
         model=model_config.model_dump(),
         task=task_config.model_dump(),
         results=results,
-        summary=summary.to_json()
+        summary=summary.to_json(),
+        outputs=inference_outputs,
     )
 
     if not args.dry_run and not args.dummy_run:

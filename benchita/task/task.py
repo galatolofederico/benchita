@@ -80,7 +80,7 @@ class Task(Sequence):
                 role="user",
                 content=current["input"]
             ))
-            out = dict(messages=messages, expected=current["output"])
+            out = dict(messages=messages, expected=current["output"], model_input=current["input"])
 
             try:
                 out["id"] = current["id"]
