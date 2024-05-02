@@ -75,10 +75,11 @@ def main():
     log_info("Final results:")
     print(summary)
 
-    results_path = os.path.join(args.results_dir, config.experiment)
-    results_file = os.path.join(results_path, "summary.csv")
-    summary.to_csv(results_file)
-    log_info(f"Results saved in {results_file}")
+    if not args.dummy_run and not args.dry_run:
+        results_path = os.path.join(args.results_dir, config.experiment)
+        results_file = os.path.join(results_path, "summary.csv")
+        summary.to_csv(results_file)
+        log_info(f"Results saved in {results_file}")
 
 if __name__ == "__main__":
     main()
