@@ -14,7 +14,7 @@ class Task(Sequence):
     def __getitem__(self, idx):
         raise NotImplementedError("__getitem__ is not implemented")
 
-    def evaluate(self, inference_inputs, inference_outputs):
+    def evaluate(self, inference):
         raise NotImplementedError("evaluate is not implemented")
     
     def results_summary(self, results):

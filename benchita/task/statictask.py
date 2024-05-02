@@ -1,35 +1,58 @@
-import os
+import json
+import pandas as pd
 
 from benchita.task import Task
+from benchita.task import register_task
 
+@register_task("static")
 class StaticTask(Task):
-    def __init__(self, base_folder="./assets"):
-        self.base_folder = base_folder
+    def __init__(self, config):
+        super(StaticTask, self).__init__(config)
+        print(config)
+        self.fname = config.args["file"]
+        self.ds = json.load(open(self.fname))
 
     def __len__(self):
-        raise NotImplementedError("__len__ is not implemented")
+        return len(self.ds)
 
     def __getitem__(self, idx):
-        raise NotImplementedError("__getitem__ is not implemented")
+        elem = self.ds[idx]
+        return {
+            "input": elem["input"],
+            "output": elem["output"]
+        }
 
-    def evaluate(self, inference_inputs, inference_outputs):
-        raise NotImplementedError("evaluate is not implemented")
-    
+    def evaluate(self, inference):
+        correct = 0
+        for elem in inference:
+            if elem["output"].startswith(elem["expected"]):
+                correct += 1
+
+        return dict(
+            accuracy=correct / len(inference)
+        )   
+
     def results_summary(self, results):
-        raise NotImplementedError("results_summary is not implemented")
+        accuracy = results["accuracy"]
+        f1_macro = results["macro avg"]["f1-score"]
+
+        return pd.DataFrame({
+            "Task": [self.task_name],
+            "Accuracy": [accuracy],
+        })
 
     @property
     def system(self):
-        raise NotImplementedError("system is not implemented")
+        return "Rispondi solamente alla seguente domanda senza proseguire la conversazione."
 
     @property
     def inject_confirmation(self):
-        raise NotImplementedError("inject_confirmation not implemented")
-    
+        return " È tutto chiaro?"
+
     @property
     def inject_confirmation_reply(self):
-        raise NotImplementedError("inject_confermation_reply is not implemented")
+        return "Si, sono pronto a rispondere alla domanda."
     
     @property
     def max_new_tokens(self):
-        raise NotImplementedError("max_new_tokens is not implemented")
+        return 64
