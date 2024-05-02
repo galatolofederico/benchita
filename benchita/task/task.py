@@ -44,7 +44,7 @@ class Task(Sequence):
         return "UNKNOWN_TASK"
 
     def build(self, *, num_shots, system_style):
-        assert system_style in ["system", "inject"]
+        assert system_style in ["system", "inject", "none"]
         for i in range(0, len(self)):
             current = self[i]
             random_indexes = random.sample(range(0, len(self)), num_shots)
@@ -57,7 +57,7 @@ class Task(Sequence):
                     role="system",
                     content=self.system
                 ))
-            else:
+            elif system_style == "inject":
                 messages.append(dict(
                     role="user",
                     content=self.system + self.inject_confirmation
