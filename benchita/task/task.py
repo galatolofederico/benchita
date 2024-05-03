@@ -45,6 +45,10 @@ class Task(Sequence):
 
     def build(self, *, num_shots, system_style):
         assert system_style in ["system", "inject", "none"]
+
+        if (not system_style == "none" and self.task_name == "static"):
+            raise NotImplementedError(f"{system_style} style not implemented for Static Task")
+
         for i in range(0, len(self)):
             current = self[i]
             random_indexes = random.sample(range(0, len(self)), num_shots)
