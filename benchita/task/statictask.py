@@ -1,4 +1,5 @@
 import json
+import os
 import pandas as pd
 
 from benchita.task import Task
@@ -10,7 +11,7 @@ class StaticTask(Task):
         super(StaticTask, self).__init__(config)
         if config.num_shots != 0:
             raise ValueError("StaticTask supports only num_shots=0")
-        self.fname = config.args["file"]
+        self.fname = os.path.join(self.base_folder, config.args["file"])
         self.ds = json.load(open(self.fname))
 
     def __len__(self):
@@ -55,4 +56,5 @@ class StaticTask(Task):
     
     @property
     def max_new_tokens(self):
+        # TODO - troppo pochi
         return 64
