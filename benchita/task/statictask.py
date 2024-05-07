@@ -13,6 +13,7 @@ class StaticTask(Task):
             raise ValueError("StaticTask supports only num_shots=0")
         self.fname = os.path.join(self.base_folder, config.args["file"])
         self.ds = json.load(open(self.fname))
+        self.max_new_tokens = config.args["max_new_tokens"]
 
     def __len__(self):
         return len(self.ds)
@@ -56,5 +57,8 @@ class StaticTask(Task):
     
     @property
     def max_new_tokens(self):
-        # TODO - troppo pochi
-        return 64
+        return self.max_new_tokens
+
+    @max_new_tokens.setter
+    def max_new_tokens(self, value):
+        self._max_new_tokens = value
