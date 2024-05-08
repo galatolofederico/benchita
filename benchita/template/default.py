@@ -14,6 +14,5 @@ class DefaultTemplate(Template):
             else:
                 raise ValueError(f"Unknown role {message['role']}")
         
-        ret += f"USER:"
-
+        ret += f"ASSISTANT:"
         return ret 
