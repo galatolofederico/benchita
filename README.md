@@ -76,6 +76,11 @@ tasks:
     num_shots: 3
   - name: ami2020
     num_shots: 3
+  - name: static
+    num_shots: 0
+    args:
+      file: inout.json
+      max_new_tokens: 100
 
 models:
   - model:
