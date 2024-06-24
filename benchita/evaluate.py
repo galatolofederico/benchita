@@ -83,7 +83,9 @@ def evaluate(*, job, args, results_file, device, worker_id=0):
             peft_cls = getattr(peft, model_config.peft.class_name)
             log_info(f"Peft: {model_config.peft.class_name} (class: {peft_cls.__name__})", worker_id=worker_id)
             log_info(f"Peft args: {model_config.peft.args}", worker_id=worker_id)
+            # model = peft_cls.from_pretrained(model, model_config.peft.name, **model_config.peft.args)
             model = peft_cls.from_pretrained(model, model_config.peft.name, **model_config.peft.args)
+            model = model.merge_and_unload()
 
     log_info("Building inference dataset...", worker_id=worker_id)
     inference_ds = build_inference_dataset(
